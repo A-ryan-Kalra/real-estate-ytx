@@ -1,14 +1,16 @@
 import { BsGoogle } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen ">
-      <div className="max-w-[750px] p-3 relative translate-y-[25%] flex  items-center justify-center mx-auto w-full">
-        <div className="flex flex-col gap-3 p-2 flex-1">
+      <div className="max-w-[750px] p-3 relative translate-y-[25%] flex max-sm:flex-col  items-center justify-center mx-auto w-full">
+        <div className="flex flex-col gap-3 mb-4 p-2 flex-1">
           <Link
             to="/"
-            className="font-sans  font-semibold text-gray-600 text-2xl"
+            className="font-sans  font-semibold text-gray-600 text-3xl"
           >
             Aryan<span className="text-teal-600">Estate</span>
           </Link>
@@ -17,7 +19,7 @@ function SignIn() {
             or with Google.
           </h1>
         </div>
-        <form className="flex-1 gap-4 flex flex-col">
+        <form className="flex-1 gap-3 max-sm:w-full  flex flex-col">
           <div>
             <label className="block" htmlFor="email">
               Your Email
@@ -54,7 +56,12 @@ function SignIn() {
           </button>
           <p className="text-[14px]">
             Dont Have an account?{" "}
-            <span className="cursor-pointer text-blue-400">Sign Up</span>
+            <span
+              onClick={() => navigate("/sign-up")}
+              className="cursor-pointer text-blue-400"
+            >
+              Sign Up
+            </span>
           </p>
         </form>
       </div>
