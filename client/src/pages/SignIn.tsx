@@ -1,15 +1,24 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FormDataProps } from "../constants/types";
 import OAuth from "../components/OAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { signInSuccess } from "../redux/user/userSlice";
+import { ClipLoader } from "react-spinners";
 
 function SignIn() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState<FormDataProps>();
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const { currentUser } = useSelector((state: any) => state.user);
 
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser]);
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -24,7 +33,7 @@ function SignIn() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log(data);
+          dispatch(signInSuccess(data));
           setLoading(false);
           navigate("/");
         } else {
@@ -109,9 +118,18 @@ function SignIn() {
           </div>
           <button
             type="submit"
-            className="active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2"
+            className={`${
+              loading ? "bg-opacity-40" : ""
+            } active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2`}
           >
-            Sign In
+            {loading ? (
+              <span className="z-10 flex items-center justify-center gap-2">
+                {" "}
+                <ClipLoader color="#5aae9d" size={23} /> Loading...
+              </span>
+            ) : (
+              "Sign In"
+            )}
           </button>
           <OAuth reload={reloadedError} />
           <p className="text-[14px]">

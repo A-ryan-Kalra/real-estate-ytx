@@ -4,20 +4,21 @@ import { app } from "../firebaseConfig";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { signIn } from "../redux/user/userSlice";
+import { signInSuccess } from "../redux/user/userSlice";
 
 function OAuth({ reload }: { reload: (str: string) => void }) {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  //   console.log(currentUser, "currentUser");
   const handleGoogleProvider = async () => {
     const provider = new GoogleAuthProvider();
-    const dispatch = useDispatch();
-
+    true;
     const auth = getAuth(app);
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
       const user = await signInWithPopup(auth, provider);
+
       const res = await fetch("/api/auth/google", {
         method: "POST",
         headers: {
@@ -29,17 +30,22 @@ function OAuth({ reload }: { reload: (str: string) => void }) {
           profilePicture: user.user.photoURL,
         }),
       });
+
       const data = await res.json();
       if (res.ok) {
-        dispatch(signIn(data));
+        dispatch(signInSuccess(data));
         navigate("/");
       } else {
         reload(data.message);
       }
+      false;
     } catch (error) {
       if (error instanceof Error) reload(error.message);
+      false;
 
       console.error(error);
+    } finally {
+      false;
     }
   };
   //   console.log(error);

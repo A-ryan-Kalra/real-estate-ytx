@@ -57,12 +57,16 @@ export const signIn = async (
 ) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return next(errorHandler(409, "All fields are required"));
     }
     const user: any = await User.findOne({
       email,
     });
+    if (!user) {
+      return next(errorHandler(404, "User does not exist"));
+    }
     const hashedPassword = bcryptjs.compareSync(
       password,
       user?.password as string

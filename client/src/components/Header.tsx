@@ -1,7 +1,11 @@
 import { HiSearch } from "react-icons/hi";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import LoggedInUser from "./LoggedInUser";
 
 function Header() {
+  const { currentUser } = useSelector((state: any) => state.user);
+  // console.log(currentUser);
   return (
     <div className="bg-[#E2E9F1] shadow-md">
       <div className="justify-between py-4 px-4 items-center max-w-[1320px] mx-auto whitespace-nowrap flex w-full">
@@ -18,16 +22,20 @@ function Header() {
             <HiSearch size={25} className="cursor-pointer" />
           </div>
         </form>
-        <div className="flex gap-4 duration-300 ">
+        <div className="flex items-center justify-center gap-4 duration-300 ">
           <Link className="hover:underline" to={"/"}>
             Home
           </Link>
           <Link className="hover:underline" to={"/about"}>
             About
           </Link>
-          <Link className="hover:text-gray-500" to={"/sign-in"}>
-            Sign In
-          </Link>
+          {currentUser ? (
+            <LoggedInUser img={currentUser} />
+          ) : (
+            <Link className="hover:text-gray-500" to={"/sign-in"}>
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
       <form className=" px-2 rounded-md shadow-sm sm:hidden">

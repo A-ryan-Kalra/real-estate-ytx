@@ -1,13 +1,24 @@
-import { useCallback, useState } from "react";
-import { BsGoogle } from "react-icons/bs";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FormDataProps } from "../constants/types";
+import { useDispatch, useSelector } from "react-redux";
+import { signInSuccess } from "../redux/user/userSlice";
+import { ClipLoader } from "react-spinners";
+import OAuth from "../components/OAuth";
 
 function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormDataProps>();
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: any) => state.user);
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,7 +34,8 @@ function SignUp() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log(data);
+          dispatch(signInSuccess(data));
+
           setLoading(false);
           navigate("/");
         } else {
@@ -53,7 +65,11 @@ function SignUp() {
         } as FormDataProps)
     );
   };
-  console.log(error, "Error");
+  // console.log(error, "Error");
+  const reloadedError = useCallback((err: string) => {
+    setError(err);
+  }, []);
+
   return (
     <div className="min-h-screen ">
       <div className="max-w-[750px] p-3 relative translate-y-[25%] flex max-sm:flex-col items-center justify-center mx-auto w-full">
@@ -117,16 +133,22 @@ function SignUp() {
               id="password"
             />
           </div>
-          <button className="active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2">
-            Sign In
+          <button
+            type="submit"
+            className={`${
+              loading ? "bg-opacity-40" : ""
+            } active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2`}
+          >
+            {loading ? (
+              <span className="z-10 flex items-center justify-center gap-2">
+                {" "}
+                <ClipLoader color="#5aae9d" size={23} /> Loading...
+              </span>
+            ) : (
+              "Sign Up"
+            )}
           </button>
-          <button className="active:scale-90 border-red-300  transition-all transform hover:from-[#79bc60] hover:text-white hover:to-[#de37ce] bg-gradient-to-r group rounded-md border-2 items-center p-2">
-            <BsGoogle
-              size={21}
-              className="group-hover:bg-white group-hover:text-black p-1 text-white bg-black rounded-full inline-block transition-none"
-            />{" "}
-            Continue with Google
-          </button>
+          <OAuth reload={reloadedError} />
           <p className="text-[14px]">
             Have an account?{" "}
             <span
