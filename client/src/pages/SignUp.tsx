@@ -1,9 +1,59 @@
+import { useCallback, useState } from "react";
 import { BsGoogle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
+import { FormDataProps } from "../constants/types";
 
 function SignUp() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormDataProps>();
+  const [error, setError] = useState<any>();
+  const [loading, setLoading] = useState(false);
 
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/auth/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setLoading(false);
+          navigate("/");
+        } else {
+          const data = await res.json();
+          setError(data?.message);
+          setLoading(false);
+
+          // console.log(data);
+          // console.log(res);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Ann error occurred!");
+        }
+      }
+    },
+    [formData]
+  );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(
+      (prev) =>
+        ({
+          ...prev,
+          [e.target.id]: e.target.value,
+        } as FormDataProps)
+    );
+  };
+  console.log(error, "Error");
   return (
     <div className="min-h-screen ">
       <div className="max-w-[750px] p-3 relative translate-y-[25%] flex max-sm:flex-col items-center justify-center mx-auto w-full">
@@ -19,13 +69,19 @@ function SignUp() {
             or with Google.
           </h1>
         </div>
-        <form className="flex-1 gap-3 flex flex-col max-sm:w-full ">
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 gap-3 flex flex-col max-sm:w-full "
+        >
           <div>
             <label className="block" htmlFor="username">
               Your Username
             </label>
             <input
               id="username"
+              onChange={handleChange}
+              value={formData?.username || ""}
               className="w-full p-2 rounded-md  border-2 focus-visible:outline-none"
               placeholder="username"
               autoComplete="on"
@@ -38,10 +94,13 @@ function SignUp() {
             </label>
             <input
               id="email"
+              onChange={handleChange}
+              required={true}
+              value={formData?.email || ""}
               className="w-full p-2 rounded-md  border-2 focus-visible:outline-none"
               placeholder="abc@xyz.com"
               autoComplete="on"
-              type="text"
+              type="email"
             />
           </div>
           <div>
@@ -50,6 +109,8 @@ function SignUp() {
             </label>
             <input
               type="password"
+              onChange={handleChange}
+              value={formData?.password || ""}
               placeholder="*******"
               className="w-full p-2 rounded-md  border-2 focus-visible:outline-none"
               autoComplete="on"
@@ -75,6 +136,11 @@ function SignUp() {
               Sign In
             </span>
           </p>
+          {error && (
+            <div className="bg-red-200 text-red-500 rounded-lg p-2 ">
+              {error}
+            </div>
+          )}
         </form>
       </div>
     </div>

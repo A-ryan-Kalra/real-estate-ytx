@@ -29,8 +29,22 @@ export const signUp = async (
       email,
       password: hashedPassword,
     });
+    const token = jwt.sign(
+      {
+        id: user?._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_TOKEN as string
+    );
+    // console.log(token);
+
     const { password: pass, ...rest } = user._doc;
-    return res.status(200).json(rest);
+    return res
+      .status(200)
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .json(rest);
   } catch (error) {
     next(error);
   }
@@ -70,6 +84,68 @@ export const signIn = async (
         httpOnly: true,
       })
       .json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const google = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const { email, username, profilePicture } = req.body;
+
+    const user: any = await User.findOne({ email });
+    console.log(user, "user");
+
+    if (user) {
+      const token = jwt.sign(
+        {
+          id: user._id,
+          isAdmin: user.isAdmin,
+        },
+        process.env.JWT_TOKEN as string
+      );
+      const { password: pass, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const result: any = new User({
+        username:
+          username.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        password: hashedPassword,
+        email,
+        profilePicture,
+      });
+
+      // console.log(result, "result");
+      await result.save();
+      const token = jwt.sign(
+        {
+          id: result._id,
+          isAdmin: result.isAdmin,
+        },
+        process.env.JWT_TOKEN as string
+      );
+      const { password: pass, ...rest } = result._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
   } catch (error) {
     next(error);
   }

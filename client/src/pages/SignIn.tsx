@@ -1,8 +1,63 @@
-import { BsGoogle } from "react-icons/bs";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FormDataProps } from "../constants/types";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<FormDataProps>();
+  const [error, setError] = useState<any>();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/auth/signin`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setLoading(false);
+          navigate("/");
+        } else {
+          const data = await res.json();
+          setError(data?.message);
+          setLoading(false);
+
+          // console.log(data);
+          // console.log(res);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Ann error occurred!");
+        }
+      }
+    },
+    [formData]
+  );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(
+      (prev) =>
+        ({
+          ...prev,
+          [e.target.id]: e.target.value,
+        } as FormDataProps)
+    );
+  };
+  // console.log(formData);
+  const reloadedError = useCallback((err: string) => {
+    setError(err);
+  }, []);
 
   return (
     <div className="min-h-screen ">
@@ -19,13 +74,19 @@ function SignIn() {
             or with Google.
           </h1>
         </div>
-        <form className="flex-1 gap-3 max-sm:w-full  flex flex-col">
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 gap-3 max-sm:w-full  flex flex-col"
+        >
           <div>
             <label className="block" htmlFor="email">
               Your Email
             </label>
             <input
               id="email"
+              onChange={handleChange}
+              value={formData?.email || ""}
               className="w-full p-2 rounded-md  border-2 focus-visible:outline-none"
               placeholder="abc@xyz.com"
               autoComplete="on"
@@ -38,22 +99,21 @@ function SignIn() {
             </label>
             <input
               type="password"
+              onChange={handleChange}
+              value={formData?.password || ""}
               placeholder="*******"
               className="w-full p-2 rounded-md  border-2 focus-visible:outline-none"
               autoComplete="on"
               id="password"
             />
           </div>
-          <button className="active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2">
+          <button
+            type="submit"
+            className="active:scale-90 bg-fuchsia-500 hover:bg-fuchsia-700 duration-[0.3s] text-white font-bold rounded-md shadow-md p-2"
+          >
             Sign In
           </button>
-          <button className="active:scale-90 border-red-300  transition-all transform hover:from-[#79bc60] hover:text-white hover:to-[#de37ce] bg-gradient-to-r group rounded-md border-2 items-center p-2">
-            <BsGoogle
-              size={21}
-              className="group-hover:bg-white group-hover:text-black p-1 text-white bg-black rounded-full inline-block transition-none"
-            />{" "}
-            Continue with Google
-          </button>
+          <OAuth reload={reloadedError} />
           <p className="text-[14px]">
             Dont Have an account?{" "}
             <span
@@ -63,6 +123,11 @@ function SignIn() {
               Sign Up
             </span>
           </p>
+          {error && (
+            <div className="bg-red-200 text-red-500 rounded-lg p-2 ">
+              {error}
+            </div>
+          )}
         </form>
       </div>
     </div>
