@@ -1,5 +1,6 @@
 export interface FormDataProps {
-  email: string;
-  password: string;
-  username: string;
+  email?: string;
+  password?: string;
+  username?: string;
+  profilePicture?: string;
 }

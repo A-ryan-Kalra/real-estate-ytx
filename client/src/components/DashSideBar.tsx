@@ -13,7 +13,7 @@ function DashSideBar({ tab }: { tab: string }) {
   const { currentUser } = useSelector((state: any) => state.user);
   //   console.log(currentUser);
   return (
-    <div className="w-56 bg-slate-100 text-slate-800">
+    <div className="w-56 min-h-screen bg-slate-100 text-slate-800">
       {currentUser.isAdmin ? (
         <div className="flex flex-col gap-4 px-4 py-2">
           <Link
@@ -55,7 +55,7 @@ function DashSideBar({ tab }: { tab: string }) {
               className={`${tab !== "posts" && "text-slate-500"}`}
               size={25}
             />
-            <h1 className="text-lg">Profile</h1>
+            <h1 className="text-lg">Posts</h1>
           </Link>
 
           <Link
