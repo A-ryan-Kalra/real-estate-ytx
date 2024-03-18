@@ -9,7 +9,10 @@ function LoggedInUser({ img }: { img: any }) {
   const refer = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  function handle() {
+  async function handle() {
+    const res = await fetch("/api/auth/signout");
+    const data = await res.json();
+    dispatch(signOut());
     setOpen(false);
     dispatch(signOut());
   }

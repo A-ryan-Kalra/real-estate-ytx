@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FormDataProps } from "../constants/types";
 import {
@@ -11,6 +11,7 @@ import {
 import { app } from "../firebaseConfig";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { signOut } from "../redux/user/userSlice";
 
 function DashProfile() {
   const [num, setNum] = useState(0);
@@ -24,6 +25,7 @@ function DashProfile() {
   >(null);
   const [imageUploadError, setImageUploadError] = useState("");
   const [loading, setLoading] = useState<boolean>();
+  const dispatch = useDispatch();
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (loading) {
@@ -90,6 +92,31 @@ function DashProfile() {
     );
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setImageUploadError("");
+
+    if (loading) {
+      setImageUploadError("Please wait for the file to upload");
+      return null;
+    }
+    if (
+      !formData?.email?.trim() &&
+      !formData?.password?.trim() &&
+      !formData?.profilePicture?.trim() &&
+      !formData?.username?.trim()
+    ) {
+      setImageUploadError("No changes made.");
+      return null;
+    }
+    const res = await fetch(`/api`);
+  };
+
+  const handleSignOut = async () => {
+    const res = await fetch("/api/auth/signout");
+    const data = await res.json();
+    dispatch(signOut());
+  };
   console.log(formData);
   //   console.log(imageUploadError, "imageUploadError");
   return (
@@ -142,7 +169,10 @@ function DashProfile() {
             {imageUploadError}
           </div>
         )}
-        <form className="flex flex-col gap-3 flex-1 w-full">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3 flex-1 w-full"
+        >
           <input
             type="file"
             ref={refer}
@@ -185,8 +215,10 @@ function DashProfile() {
           Create a Post
         </Link>
         <div className="w-full items-center justify-between text-red-500 flex">
-          <h1 className="hover:underline">Delete Account</h1>
-          <h1 className="hover:underline">Sign out</h1>
+          <button className="hover:underline">Delete Account</button>
+          <button className="hover:underline" onClick={handleSignOut}>
+            Sign out
+          </button>
         </div>
       </div>
     </div>

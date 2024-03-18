@@ -5,6 +5,7 @@ import LoggedInUser from "./LoggedInUser";
 
 function Header() {
   const { currentUser } = useSelector((state: any) => state.user);
+
   // console.log(currentUser);
   return (
     <div className="bg-[#E2E9F1] shadow-md">

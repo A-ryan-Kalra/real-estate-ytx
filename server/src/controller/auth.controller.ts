@@ -154,3 +154,18 @@ export const google = async (
     next(error);
   }
 };
+
+export const signout = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json({ message: "User has been signed out" });
+  } catch (error) {
+    next(error);
+  }
+};
