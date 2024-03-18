@@ -27,7 +27,7 @@ function LoggedInUser({ img }: { img: any }) {
   }, []);
   const handleProfile = () => {
     setOpen(false);
-    navigate("/profile");
+    navigate("/dashboard?tab=profile");
   };
 
   return (
