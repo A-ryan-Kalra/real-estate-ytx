@@ -9,8 +9,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebaseConfig";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 function DashProfile() {
+  const [num, setNum] = useState(0);
   const { currentUser } = useSelector((state: any) => state.user);
   const refer = useRef<HTMLInputElement>(null);
   const [imgFile, setImgFile] = useState<File | null>();
@@ -20,15 +23,20 @@ function DashProfile() {
     string | null
   >(null);
   const [imageUploadError, setImageUploadError] = useState("");
+  const [loading, setLoading] = useState<boolean>();
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImgFile(file);
-      setImgFileUrl(URL.createObjectURL(file));
+    if (loading) {
+      return null;
+    } else {
+      const file = e.target.files?.[0];
+      if (file && !loading) {
+        setImgFile(file);
+        setImgFileUrl(URL.createObjectURL(file));
+      }
     }
   };
-
+  //   console.log(loading);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // if (e.target.value.trim()) {
     //   console.log("trimmed");
@@ -40,12 +48,14 @@ function DashProfile() {
   };
 
   useEffect(() => {
-    if (imgFile) {
+    if (imgFile && !loading) {
       uploadImage();
     }
   }, [imgFile]);
 
   const uploadImage = async () => {
+    setLoading(true);
+    setImageUploadError("");
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imgFile!.name;
     const storageRef = ref(storage, `images/${fileName}`);
@@ -57,32 +67,31 @@ function DashProfile() {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setImageFileUploadingProgress(progress.toFixed(0));
+        setNum(100);
       },
       (error) => {
-        setImageUploadError(
-          ("Could not upload (File must be less than 4MB)" +
-            error.message) as string
-        );
+        setImageUploadError("Could not upload (File must be less than 4MB)");
+        setNum(0);
         setImageFileUploadingProgress(null);
         setImgFile(null);
         setImgFileUrl(null);
+        setLoading(false);
       },
       () => {
-        console.log(uploadTask.snapshot.ref);
-        console.log("uploadTask.snapshot.ref");
         getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
           setImgFileUrl(downloadUrl);
           setFormData((prev) => ({
             ...prev,
             profilePicture: downloadUrl,
           }));
+          setLoading(false);
         });
       }
     );
   };
 
   console.log(formData);
-  console.log(imgFileUrl, "imgFIleUrl");
+  //   console.log(imageUploadError, "imageUploadError");
   return (
     <div className="w-full">
       <div className="flex flex-col items-center justify-center px-3 py-4 gap-3  max-w-[550px] mx-auto">
@@ -90,16 +99,49 @@ function DashProfile() {
           Profile
         </h1>
         <div
-          className="rounded-full border-[4px] duration-300 ease-in-out border-slate-300 shadow-md shadow-slate-600"
+          className="rounded-full relative  duration-300 ease-in-out  shadow-md shadow-slate-600"
           onClick={() => refer.current?.click()}
         >
+          {imageFileUploadingProgress && (
+            <CircularProgressbar
+              value={(imageFileUploadingProgress as unknown as number) || 0}
+              text={`${imageFileUploadingProgress}%`}
+              strokeWidth={5}
+              styles={{
+                root: {
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                },
+
+                path: {
+                  stroke: `rgba(81,187,199,${
+                    (imageFileUploadingProgress as unknown as number) / 100
+                  }`,
+                },
+              }}
+            />
+          )}
+
           <img
-            className="rounded-full w-[110px] h-[110px] object-cover cursor-pointer"
+            className="rounded-full duration-[1s] w-[110px] border-[5px] border-[lightgray] h-[110px] object-cover cursor-pointer"
             src={imgFileUrl || currentUser?.profilePicture}
             id="profilePicture"
+            style={{
+              filter: `blur(${
+                num - (imageFileUploadingProgress as unknown as number)
+              }px)`,
+            }}
             alt="img"
           />
         </div>
+        {imageUploadError && (
+          <div className="bg-red-200 p-2 rounded-md text-red-500">
+            {imageUploadError}
+          </div>
+        )}
         <form className="flex flex-col gap-3 flex-1 w-full">
           <input
             type="file"
@@ -107,6 +149,7 @@ function DashProfile() {
             className="hidden"
             onChange={handleImage}
             accept="image/*"
+            value={""}
           />
           <input
             type="text"
