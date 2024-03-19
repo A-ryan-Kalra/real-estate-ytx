@@ -45,11 +45,8 @@ function DashProfile() {
       }
     }
   };
-  //   console.log(loading);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.value.trim()) {
-    //   console.log("trimmed");
-    // }
     setSwitchSides(true);
     setFormData((prev) => ({
       ...prev,
@@ -163,7 +160,6 @@ function DashProfile() {
         method: "DELETE",
       });
       const data = await res.json();
-      console.log(data);
       if (res.ok) {
         dispatch(signOut());
         setImageUpdateSuccess("User deleted successfully");
@@ -175,8 +171,7 @@ function DashProfile() {
       if (error instanceof Error) setImageUploadError(error.message);
     }
   };
-  // console.log(formData);
-  console.log(currentUser);
+
   return (
     <div className="w-full">
       <div className="flex flex-col items-center justify-center px-3 py-4 gap-3  max-w-[550px] mx-auto">
