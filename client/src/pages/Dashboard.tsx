@@ -15,8 +15,8 @@ function Dashboard() {
 
   // console.log(tab);
   return (
-    <div className="min-h-screen w-full flex">
-      <div className="w-56">
+    <div className="min-h-screen w-full flex flex-col md:flex-row">
+      <div className="">
         <DashSideBar tab={tab} />
       </div>
       {tab === "profile" && <DashProfile />}

@@ -19,8 +19,11 @@ function DashProfile() {
   const { currentUser } = useSelector((state: any) => state.user);
   const refer = useRef<HTMLInputElement>(null);
   const [imgFile, setImgFile] = useState<File | null>();
-  const [imgFileUrl, setImgFileUrl] = useState<string | null>();
-  const [formData, setFormData] = useState<FormDataProps>();
+  const [imgFileUrl, setImgFileUrl] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormDataProps>({
+    username: currentUser?.username,
+    email: currentUser?.email,
+  });
   const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState<
     string | null
   >(null);
@@ -29,6 +32,7 @@ function DashProfile() {
   const dispatch = useDispatch();
   const [imageUpdateSuccess, setImageUpdateSuccess] = useState("");
   const [switchEye, setSwitchEye] = useState(false);
+  const [switchSides, setSwitchSides] = useState(false);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (loading) {
@@ -46,6 +50,7 @@ function DashProfile() {
     // if (e.target.value.trim()) {
     //   console.log("trimmed");
     // }
+    setSwitchSides(true);
     setFormData((prev) => ({
       ...prev,
       [e.target.id]: e.target.value.trim(),
@@ -142,12 +147,36 @@ function DashProfile() {
   };
 
   const handleSignOut = async () => {
-    const res = await fetch("/api/auth/signout");
-    const data = await res.json();
-    dispatch(signOut());
+    try {
+      const res = await fetch("/api/auth/signout");
+      const data = await res.json();
+      dispatch(signOut());
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) setImageUploadError(error.message);
+    }
   };
-  console.log(formData);
-  //   console.log(imageUploadError, "imageUploadError");
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      console.log(data);
+      if (res.ok) {
+        dispatch(signOut());
+        setImageUpdateSuccess("User deleted successfully");
+      } else {
+        setImageUploadError("Something went wrong");
+      }
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) setImageUploadError(error.message);
+    }
+  };
+  // console.log(formData);
+  console.log(currentUser);
   return (
     <div className="w-full">
       <div className="flex flex-col items-center justify-center px-3 py-4 gap-3  max-w-[550px] mx-auto">
@@ -217,16 +246,22 @@ function DashProfile() {
           />
           <input
             type="text"
-            placeholder="username"
-            value={formData?.username || currentUser?.username || ""}
+            placeholder="Username"
+            value={
+              switchSides
+                ? formData?.username || ""
+                : currentUser?.username || ""
+            }
             onChange={handleChange}
             id="username"
             className="p-2 rounded-lg focus-visible:outline-none border-2"
           />
           <input
             type="email"
-            placeholder="email"
-            value={formData?.email || currentUser?.email || ""}
+            placeholder="Email"
+            value={
+              switchSides ? formData?.email || "" : currentUser?.email || ""
+            }
             onChange={handleChange}
             id="email"
             className="p-2 rounded-lg focus-visible:outline-none border-2"
@@ -241,7 +276,7 @@ function DashProfile() {
               onChange={handleChange}
               className="p-2 w-full focus-visible:outline-none"
             />
-            {switchEye ? (
+            {!switchEye ? (
               <HiEyeOff
                 onClick={() => setSwitchEye(!switchEye)}
                 size={21}
@@ -261,12 +296,14 @@ function DashProfile() {
         </form>
         <Link
           className="border-2 w-full p-2 rounded-md text-center border-fuchsia-500 duration-300 ease-in-out hover:shadow-fuchsia-500 hover:shadow-md "
-          to="/create-post"
+          to="/create-listing"
         >
-          Create a Post
+          Create Listing
         </Link>
         <div className="w-full items-center justify-between text-red-500 flex">
-          <button className="hover:underline">Delete Account</button>
+          <button className="hover:underline" onClick={handleDelete}>
+            Delete Account
+          </button>
           <button className="hover:underline" onClick={handleSignOut}>
             Sign out
           </button>

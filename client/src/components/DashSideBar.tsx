@@ -21,7 +21,7 @@ function DashSideBar({ tab }: { tab: string }) {
   };
   //   console.log(currentUser);
   return (
-    <div className="w-56 min-h-screen bg-slate-100 text-slate-800">
+    <div className="md:w-56 w-full h-full bg-slate-100 text-slate-800">
       {currentUser.isAdmin ? (
         <div className="flex flex-col gap-4 px-4 py-2">
           <Link
