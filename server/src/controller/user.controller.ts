@@ -3,12 +3,16 @@ import express from "express";
 import User from "../models/user.model";
 import { deleteModel } from "mongoose";
 import errorHandler from "../utils/errorHandler";
+import { UserProps } from "../utils/verifyUser";
 
 export const updateUser = async (
-  req: express.Request,
+  req: UserProps,
   res: express.Response,
   next: express.NextFunction
 ) => {
+  if (req.user.id !== req.params.userId) {
+    next(errorHandler(403, "You are not allowed to update the user"));
+  }
   const { username, profilePicture, email } = req.body;
   if (req.body.password) {
     req.body.password = bcryptjs.hashSync(req.body.password, 10);
@@ -37,10 +41,13 @@ export const updateUser = async (
 };
 
 export const getUsers = async (
-  req: express.Request,
+  req: UserProps,
   res: express.Response,
   next: express.NextFunction
 ) => {
+  if (!req.user.isAdmin) {
+    next(errorHandler(405, "You are not allowed to see all users"));
+  }
   try {
     const getAllUser: any = await User.find();
 
@@ -51,10 +58,13 @@ export const getUsers = async (
 };
 
 export const deleteUser = async (
-  req: express.Request,
+  req: UserProps,
   res: express.Response,
   next: express.NextFunction
 ) => {
+  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+    next(errorHandler(403, "You are not allowed to delete this user"));
+  }
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.userId);
     if (!deletedUser) {
@@ -67,7 +77,7 @@ export const deleteUser = async (
 };
 
 export const getUser = async (
-  req: express.Request,
+  req: UserProps,
   res: express.Response,
   next: express.NextFunction
 ) => {

@@ -4,6 +4,6 @@ import { verifyUser } from "../utils/verifyUser";
 
 const router = express.Router();
 
-router.post("/create", verifyUser, createListing);
+router.post("/create/:userId", verifyUser, createListing);
 
 export default router;
