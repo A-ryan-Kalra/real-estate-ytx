@@ -4,16 +4,20 @@ import authRouter from "./routes/auth.route";
 import { testing } from "./controller/auth.controller";
 import connectDb from "./config/dbConfig";
 import userRouter from "./routes/user.router";
+import listingRouter from "./routes/listing.router";
+import cookieparse from "cookie-parser";
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
 const app = express();
 connectDb();
 app.use(express.json());
+app.use(cookieparse());
 
 app.get("/api/test", testing);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
 
 app.listen(PORT, () => {
   console.log("Port is successfully running on ", PORT);
