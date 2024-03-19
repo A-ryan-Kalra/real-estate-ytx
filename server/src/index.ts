@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRouter from "./routes/auth.route";
 import { testing } from "./controller/auth.controller";
 import connectDb from "./config/dbConfig";
+import userRouter from "./routes/user.router";
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
@@ -11,6 +12,7 @@ connectDb();
 app.use(express.json());
 
 app.get("/api/test", testing);
+app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {

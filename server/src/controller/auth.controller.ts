@@ -102,7 +102,6 @@ export const google = async (
     const { email, username, profilePicture } = req.body;
 
     const user: any = await User.findOne({ email });
-    console.log(user, "user");
 
     if (user) {
       const token = jwt.sign(

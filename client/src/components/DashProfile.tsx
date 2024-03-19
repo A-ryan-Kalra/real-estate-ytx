@@ -11,7 +11,8 @@ import {
 import { app } from "../firebaseConfig";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { signOut } from "../redux/user/userSlice";
+import { signInSuccess, signOut } from "../redux/user/userSlice";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 
 function DashProfile() {
   const [num, setNum] = useState(0);
@@ -26,6 +27,8 @@ function DashProfile() {
   const [imageUploadError, setImageUploadError] = useState("");
   const [loading, setLoading] = useState<boolean>();
   const dispatch = useDispatch();
+  const [imageUpdateSuccess, setImageUpdateSuccess] = useState("");
+  const [switchEye, setSwitchEye] = useState(false);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (loading) {
@@ -109,7 +112,33 @@ function DashProfile() {
       setImageUploadError("No changes made.");
       return null;
     }
-    const res = await fetch(`/api`);
+
+    try {
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        dispatch(signInSuccess(data));
+        setImageUploadError("");
+        setImageUpdateSuccess("Information updated successfully!");
+      } else {
+        setImageUploadError(data.message);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setImageUploadError(error.message);
+      } else {
+        setImageUploadError("An error occurred");
+      }
+    } finally {
+      setFormData({ ...formData, password: "" });
+    }
   };
 
   const handleSignOut = async () => {
@@ -169,6 +198,11 @@ function DashProfile() {
             {imageUploadError}
           </div>
         )}
+        {imageUpdateSuccess && (
+          <div className="bg-green-100 text-green-500 font-semibold p-2 rounded-md">
+            {imageUpdateSuccess}
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 flex-1 w-full"
@@ -184,26 +218,43 @@ function DashProfile() {
           <input
             type="text"
             placeholder="username"
-            value={formData?.username || currentUser?.username}
+            value={formData?.username || currentUser?.username || ""}
             onChange={handleChange}
             id="username"
             className="p-2 rounded-lg focus-visible:outline-none border-2"
           />
           <input
-            type="text"
+            type="email"
             placeholder="email"
             value={formData?.email || currentUser?.email || ""}
             onChange={handleChange}
             id="email"
             className="p-2 rounded-lg focus-visible:outline-none border-2"
           />
-          <input
-            type="text"
-            placeholder="Password"
-            id="password"
-            onChange={handleChange}
-            className="p-2 rounded-lg focus-visible:outline-none border-2"
-          />
+          <div className="w-full flex items-center rounded-lg border-2 overflow-hidden">
+            <input
+              type={!switchEye ? "password" : "text"}
+              placeholder="Password"
+              id="password"
+              value={formData?.password || ""}
+              autoComplete="off"
+              onChange={handleChange}
+              className="p-2 w-full focus-visible:outline-none"
+            />
+            {switchEye ? (
+              <HiEyeOff
+                onClick={() => setSwitchEye(!switchEye)}
+                size={21}
+                className="relative right-1 cursor-pointer hover:text-[#767474] duration-300 rounded-full"
+              />
+            ) : (
+              <HiEye
+                onClick={() => setSwitchEye(!switchEye)}
+                size={21}
+                className="relative right-1 cursor-pointer hover:text-[#767474] duration-300 rounded-full"
+              />
+            )}
+          </div>
           <button className="border-2 p-2 rounded-md border-[#21cdbe] hover:shadow-md duration-300 ease-in-out active:scale-95 hover:shadow-[#21cdbe]">
             Update
           </button>
