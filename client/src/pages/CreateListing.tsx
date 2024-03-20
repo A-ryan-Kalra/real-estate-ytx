@@ -9,23 +9,33 @@ import {
 } from "firebase/storage";
 import { app } from "../firebaseConfig";
 import firebase from "firebase/compat/app";
+import { ClipLoader } from "react-spinners";
 
 function CreateListing() {
   const [checked, setChecked] = useState("rent");
   const { currentUser } = useSelector((state: any) => state.user);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [imgFile, setImgFile] = useState<File[] | undefined | null>();
+  const [imgFile, setImgFile] = useState<boolean>(false);
+  const [imgFile1, setImgFile1] = useState<boolean>(false);
   const [formData, setFormData] = useState<ListingDataProps>({
     userRef: currentUser._id,
   } as ListingDataProps);
   const [imgUploadingProgress, setImageFileUploadingProgress] = useState<
     string[] | null
   >(["0"]);
+  const [imgFileUrl, setImgFileUrl] = useState<string[]>([]);
+  const [imgFileUrl1, setImgFileUrl1] = useState<File[]>([]);
+
+  const [success, setSuccess] = useState("");
+  const [imgLink, setImgLink] = useState<string[]>([]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>
   ) => {
-    console.log(typeof e.target.value);
+    setError("");
+    setSuccess("");
+
     if (e.target.id === "rent" || e.target.id === "sale") {
       setChecked(e.target.id);
       setFormData({ ...formData, type: e.target.id } as ListingDataProps);
@@ -52,6 +62,9 @@ function CreateListing() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
     try {
       const res = await fetch(`/api/listing/create/${currentUser._id}`, {
         method: "POST",
@@ -61,26 +74,45 @@ function CreateListing() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      setLoading(false);
+      setSuccess("Information saved successfully");
       console.log(data);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
   useEffect(() => {
-    if (imgFile && imgFile?.length > 0) {
+    if (imgFile && !error) {
       uploadImage();
     }
-  }, [imgFile]);
+    if (imgFileUrl.length > 0 || loading) {
+      setImgFile1(true);
+    } else {
+      setImgFile1(false);
+    }
+  }, [imgFile, imgFileUrl]);
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      profilePicture: imgLink,
+    }));
+  }, [imgLink]);
 
   const uploadImage = async () => {
     setLoading(true);
     setError("");
+    setSuccess("");
     const storage = getStorage(app);
     const uploadTasks: firebase.storage.UploadTask[] = [];
-    for (let i = 0; i < imgFile!.length; i++) {
-      const fileName = new Date().getTime() + imgFile![i]!.name;
+
+    for (let i = 0; i < imgFileUrl1!.length; i++) {
+      const fileName = new Date().getTime() + imgFileUrl1![i]!.name;
       const storageRef = ref(storage, `listingImg/${fileName}`);
-      const uploadTask = uploadBytesResumable(storageRef, imgFile![i] as Blob);
+      const uploadTask = uploadBytesResumable(
+        storageRef,
+        imgFileUrl1![i] as Blob
+      );
 
       uploadTask.on(
         "state_changed",
@@ -97,17 +129,18 @@ function CreateListing() {
         (error) => {
           setError("Could not upload (File must be less than 4MB)");
           setImageFileUploadingProgress(null);
-          setImgFile(null);
+          setImgFileUrl1([]);
+          setImgFileUrl([]);
           setLoading(false);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-            //   setFormData((prev) => ({
-            //     ...prev,
-            //     profilePicture: downloadUrl,
-            //   }));
-            console.log(downloadUrl);
+            setImgFileUrl([]);
+            setImgFileUrl1([]);
+            setImgLink((prev) => [...prev, downloadUrl]);
             setLoading(false);
+            setImgFile1(false);
+            setImgFile(false);
           });
         }
       );
@@ -117,18 +150,60 @@ function CreateListing() {
       console.log("All files uploaded successfully");
     });
   };
-  //   console.log(imgUploadingProgress, "imageProgress");
+  console.log(formData);
+
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    setImgFile1(true);
     const fileArray: File[] = Array.from(e.target.files as FileList);
-    setImgFile(fileArray);
+    // 3999999;
+    setTimeout(() => {
+      let hasError = false;
+      for (const i of fileArray) {
+        if (i.size > 3999999) {
+          setError(i.name.slice(0, 20) + "Image should be less than 4mb");
+          setImgFileUrl([]);
+          setImgFileUrl1([]);
+          setLoading(false);
+          e.target.value = "";
+
+          hasError = true;
+          return null;
+        } else {
+          setImgFileUrl((prev) => [...prev, URL.createObjectURL(i)]);
+          setImgFileUrl1((prev) => [...prev, i]);
+        }
+      }
+      setLoading(false);
+
+      // if (!hasError) {
+      //   setImgFile(fileArray);
+      //   console.log("outside");
+      // }
+    }, 800);
+  };
+  const handleImgUrlDelete = (image: string, index: number) => {
+    const filteredUrls = imgFileUrl.filter((img) => img !== image);
+    setImgFileUrl(filteredUrls);
+    const filteredUrls1 = imgFileUrl1.filter((_, ind) => ind !== index);
+    setImgFileUrl1(filteredUrls1);
+  };
+  const handleUploadImage = () => {
+    setImgFile(true);
+    setLoading(true);
   };
 
   return (
-    <div className="min-h-screen  max-w-[900px] mx-auto">
+    <div className="min-h-screen p-2 max-w-[900px] mx-auto">
       <div className="flex flex-col items-center gap-3  my-8 justify-center">
         <h1 className="text-3xl font-bold">Create a Listing</h1>
-        <form onSubmit={handleSubmit} className="flex w-full gap-3">
-          <div className="flex flex-col gap-3 w-full">
+        <form
+          onSubmit={handleSubmit}
+          className="flex md:flex-row flex-col w-full gap-3 p-2"
+        >
+          <div className="flex flex-col gap-4 w-full">
             <input
               type="text"
               id="name"
@@ -250,7 +325,7 @@ function CreateListing() {
             </div>
           </div>
           <div className="flex flex-col gap-3 w-full">
-            <div>
+            <div className="">
               <h1 className="font-semibold">
                 Images:{" "}
                 <span className="font-normal">
@@ -258,29 +333,72 @@ function CreateListing() {
                 </span>
               </h1>
             </div>
-            <div className="flex gap-3 p-2">
-              <div className="border-2 rounded-md p-3">
+            <div className="flex gap-3 ">
+              <div className="border-2 min-w-[100px] rounded-md p-3">
                 <input
                   onChange={handleImg}
                   type="file"
-                  name=""
                   accept="image/*"
                   multiple={true}
                 />
               </div>
               <button
                 type="button"
-                className="border-2 rounded-md p-2 hover:shadow-teal-300 hover:shadow-md duration-300"
+                onClick={handleUploadImage}
+                className="border-2 rounded-md p-2 w-20 hover:shadow-teal-300 hover:shadow-md duration-300"
               >
-                Upload
+                {loading ? (
+                  <ClipLoader
+                    size={25}
+                    speedMultiplier={1.5}
+                    color={"#63c0ac"}
+                    className=""
+                  />
+                ) : (
+                  "Upload"
+                )}
               </button>
             </div>
             <button
               type="submit"
-              className="mx-2 active:scale-90 duration-300 bg-slate-700 text-white tracking-wide rounded-md p-2 border-2"
+              disabled={imgFile1}
+              className="disabled:bg-opacity-20  active:scale-90 duration-300 bg-slate-700 text-white tracking-wide rounded-md p-2 border-2"
             >
               Create Listing
             </button>
+            {error && (
+              <div className="border-2 m-2 bg-red-200 text-red-500 rounded-md p-2">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="border-2 m-2 bg-green-200 text-green-700 rounded-md p-2">
+                {success}
+              </div>
+            )}
+            {imgFileUrl.length > 0 && (
+              <div className=" p-2 flex flex-col gap-2 h-[350px] overflow-y-auto border-2 rounded-md shadow-sm">
+                {imgFileUrl.map((img: string, index: number) => (
+                  <div
+                    key={index}
+                    className="p-2 flex justify-between items-center border-2 rounded-md  shadow-md hover:shadow-teal-300 duration-300 ease-in-out w-full"
+                  >
+                    <img
+                      src={img}
+                      className="w-20 h-20 object-cover overflow-hidden rounded-md"
+                      alt={"img"}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleImgUrlDelete(img, index)}
+                      className="border-2  p-3 rounded-md hover:bg-red-200 duration-300 hover:border-red-300 hover:text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </form>
       </div>
