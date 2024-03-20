@@ -10,9 +10,9 @@ import {
 import { app } from "../firebaseConfig";
 import firebase from "firebase/compat/app";
 import { ClipLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-function CreateListing() {
+function EditListing() {
   const [checked, setChecked] = useState("rent");
   const { currentUser } = useSelector((state: any) => state.user);
   const [error, setError] = useState("");
@@ -41,6 +41,32 @@ function CreateListing() {
   const navigate = useNavigate();
   const [success, setSuccess] = useState("");
   const [imgLink, setImgLink] = useState<string[]>([]);
+  const urlParams = useParams();
+  const [editListing, setEditListing] = useState<ListingDataProps>();
+  const [switchSides, setSwitchSides] = useState(false);
+
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const list = await fetch(`/api/listing/getlisting/${currentUser._id}`);
+        const data = await list.json();
+        console.log(data);
+        console.log(urlParams.id);
+        if (list.ok) {
+          const filtered = data.find(
+            (dat: ListingDataProps) => dat._id === urlParams.id
+          );
+          setEditListing(filtered);
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getList();
+  }, []);
+  console.log(editListing);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>
@@ -234,6 +260,7 @@ function CreateListing() {
               maxLength={60}
               className="p-2 rounded-md border-2"
               placeholder="Name"
+              defaultValue={editListing?.name || ""}
               onChange={handleChange}
               required={true}
             />
@@ -464,4 +491,4 @@ function CreateListing() {
   );
 }
 
-export default CreateListing;
+export default EditListing;

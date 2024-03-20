@@ -48,3 +48,60 @@ export const createListing = async (
     next(error);
   }
 };
+
+export const getListing = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  if (req.user.id !== req.params.userId) {
+    next(errorHandler(403, "You are not allowed to see the listings"));
+  }
+  const { userId } = req.params;
+
+  try {
+    const allListings = await listing.find({ userRef: userId });
+    return res.status(200).json(allListings);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getListings = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  if (!req.user.isAdmin) {
+    next(errorHandler(403, "You are not allowed to see all the listings"));
+  }
+  try {
+    const allListings = await listing.find();
+    return res.status(200).json(allListings);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteListing = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  console.log(req.body.id, "req.body.id");
+  console.log(req.params.listingId, "req.params.listingId");
+  if (req.user.id !== req.body.id) {
+    return next(errorHandler(403, "You are not allowed to delete the listing"));
+  }
+  try {
+    const deletedListing = await listing.findByIdAndDelete({
+      _id: req.params.listingId,
+    });
+    if (!deletedListing) {
+      return next(errorHandler(404, "Listing not found"));
+    }
+    res.status(200).json("Listing deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};

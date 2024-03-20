@@ -13,6 +13,7 @@ const app = express();
 connectDb();
 app.use(express.json());
 app.use(cookieparse());
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/api/test", testing);
 app.use("/api/user", userRouter);

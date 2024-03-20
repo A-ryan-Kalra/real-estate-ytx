@@ -13,8 +13,10 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { signInSuccess, signOut } from "../redux/user/userSlice";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import Listings from "./Listings";
 
 function DashProfile() {
+  const [showListing, setShowListing] = useState(false);
   const [num, setNum] = useState(0);
   const { currentUser } = useSelector((state: any) => state.user);
   const refer = useRef<HTMLInputElement>(null);
@@ -303,6 +305,13 @@ function DashProfile() {
             Sign out
           </button>
         </div>
+        <button
+          onClick={() => setShowListing(!showListing)}
+          className="bg-fuchsia-400 my-2 text-white duration-300 ease-in-out hover:shadow-teal-300 active:scale-95 font-semibold p-2 rounded-md shadow-md shadow-fuchsia-300"
+        >
+          Show Listings
+        </button>
+        {showListing && <Listings />}
       </div>
     </div>
   );

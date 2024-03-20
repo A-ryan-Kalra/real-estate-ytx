@@ -19,4 +19,8 @@ export interface ListingDataProps {
   type?: string;
   userRef: string;
   imageUrls: string[];
+  __v?: number;
+  _id?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

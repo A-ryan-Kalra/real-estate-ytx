@@ -53,6 +53,9 @@ const listingSchema = new mongoose.Schema(
     },
     imageUrls: {
       type: [String],
+      default: [
+        "https://assets.architecturaldigest.in/photos/6000491e1626622a53c5f133/master/w_1600%2Cc_limit/Beachyhead_1a_Int016_Bedroom_001_al.jpg",
+      ],
     },
   },
   {
