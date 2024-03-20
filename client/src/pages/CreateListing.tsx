@@ -10,6 +10,7 @@ import {
 import { app } from "../firebaseConfig";
 import firebase from "firebase/compat/app";
 import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 function CreateListing() {
   const [checked, setChecked] = useState("rent");
@@ -26,7 +27,7 @@ function CreateListing() {
   >(["0"]);
   const [imgFileUrl, setImgFileUrl] = useState<string[]>([]);
   const [imgFileUrl1, setImgFileUrl1] = useState<File[]>([]);
-
+  const navigate = useNavigate();
   const [success, setSuccess] = useState("");
   const [imgLink, setImgLink] = useState<string[]>([]);
 
@@ -75,10 +76,19 @@ function CreateListing() {
       });
       const data = await res.json();
       setLoading(false);
-      setSuccess("Information saved successfully");
-      console.log(data);
+      if (res.ok) {
+        setSuccess("Information saved successfully");
+        setFormData({} as ListingDataProps);
+        navigate(`/listing/${formData.userRef}`);
+      } else {
+        setError(data.message);
+      }
+      // console.log(data);
     } catch (error) {
       console.error(error);
+      if (error instanceof Error) {
+        setError(error.message);
+      }
       setLoading(false);
     }
   };
@@ -93,10 +103,12 @@ function CreateListing() {
     }
   }, [imgFile, imgFileUrl]);
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      profilePicture: imgLink,
-    }));
+    if (imgLink.length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        imageUrls: imgLink,
+      }));
+    }
   }, [imgLink]);
 
   const uploadImage = async () => {
@@ -150,7 +162,7 @@ function CreateListing() {
       console.log("All files uploaded successfully");
     });
   };
-  console.log(formData);
+  // console.log(formData);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
@@ -207,24 +219,29 @@ function CreateListing() {
             <input
               type="text"
               id="name"
+              minLength={10}
+              maxLength={60}
               className="p-2 rounded-md border-2"
               placeholder="Name"
               onChange={handleChange}
+              required={true}
             />
             <textarea
               className="p-2 rounded-md resize-none border-2 h-[100px]"
               id="description"
               placeholder="Description"
+              required={true}
               onChange={handleChange}
             ></textarea>
             <input
               type="text"
               className="p-2 rounded-md border-2"
               id="address"
+              required={true}
               placeholder="Address"
               onChange={handleChange}
             />
-            <div className="flex gap-5  flex-wrap max-w-[90%]">
+            <div className="flex gap-5 p-1 flex-wrap max-w-[90%]">
               <div className="flex gap-1 items-center">
                 <input
                   className="h-5 w-5"
@@ -291,6 +308,8 @@ function CreateListing() {
                   onChange={handleChange}
                   className="w-[100px] h-[50px] border-2 rounded-md p-2"
                   type="number"
+                  min={1}
+                  max={10}
                   id="bedrooms"
                   defaultValue={1}
                 />
@@ -301,6 +320,8 @@ function CreateListing() {
                   onChange={handleChange}
                   className="w-[100px] h-[50px] border-2 rounded-md p-2"
                   type="number"
+                  min={1}
+                  max={10}
                   defaultValue={1}
                   id="bathrooms"
                 />
@@ -311,6 +332,8 @@ function CreateListing() {
               <input
                 onChange={handleChange}
                 type="number"
+                min={500}
+                max={500000000}
                 defaultValue={0}
                 id="regularPrice"
                 className="w-[150px] h-[50px] border-2 rounded-md p-2"
@@ -323,6 +346,29 @@ function CreateListing() {
                 <h1 className="text-sm"> (₹ / Month)</h1>
               </label>
             </div>
+            {formData.offer && (
+              <div className="flex gap-3 items-center">
+                <input
+                  onChange={handleChange}
+                  type="number"
+                  min={500}
+                  max={500000000}
+                  defaultValue={0}
+                  id="discountPrice"
+                  className="w-[150px] h-[50px] border-2 rounded-md p-2"
+                />
+                <label
+                  htmlFor="regularPrice"
+                  className="flex flex-col items-center"
+                >
+                  <h1>Regular price</h1>
+                  <h1 className="text-sm">
+                    {" "}
+                    {formData.type === "rent" ? "(₹ / Month)" : "(₹)"}
+                  </h1>
+                </label>
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-3 w-full">
             <div className="">
@@ -334,10 +380,11 @@ function CreateListing() {
               </h1>
             </div>
             <div className="flex gap-3 ">
-              <div className="border-2 min-w-[100px] rounded-md p-3">
+              <div className="border-2 min-w-[100px]  overflow-hidden rounded-md p-3">
                 <input
                   onChange={handleImg}
                   type="file"
+                  className="text-ellipsis"
                   accept="image/*"
                   multiple={true}
                 />
@@ -377,7 +424,7 @@ function CreateListing() {
               </div>
             )}
             {imgFileUrl.length > 0 && (
-              <div className=" p-2 flex flex-col gap-2 h-[350px] overflow-y-auto border-2 rounded-md shadow-sm">
+              <div className=" p-2 flex flex-col gap-2 max-h-[350px] overflow-y-auto border-2 rounded-md shadow-sm">
                 {imgFileUrl.map((img: string, index: number) => (
                   <div
                     key={index}

@@ -37,7 +37,7 @@ function LoggedInUser({ img }: { img: any }) {
     <div ref={refer} className="relative bg-black rounded-full ">
       <img
         onClick={() => setOpen(!open)}
-        src={img.profilePicture}
+        src={img.profilePicture!}
         className="cursor-pointer border-[2px] border-gray-500 w-8 rounded-full h-8"
         alt="display-img"
       />
