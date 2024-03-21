@@ -11,37 +11,12 @@ export const createListing = async (
   if (req.user.id !== req.params.userId) {
     next(errorHandler(403, "You are not allowed to create the listing"));
   }
-  const {
-    address,
-    name,
-    description,
-    bathrooms,
-    bedrooms,
-    discountPrice,
-    regularPrice,
-    furnished,
-    offer,
-    parking,
-    type,
-    userRef,
-    imageUrls,
-  } = req.body;
+  console.log(req.body);
+  console.log("req.body");
+
+  const { formData } = req.body;
   try {
-    const newlistings = new listing({
-      address,
-      bathrooms,
-      bedrooms,
-      discountPrice,
-      description,
-      furnished,
-      offer,
-      parking,
-      name,
-      regularPrice,
-      type,
-      userRef,
-      imageUrls,
-    });
+    const newlistings = new listing(formData);
     await newlistings.save();
     res.status(200).json(newlistings);
   } catch (error) {
@@ -88,8 +63,6 @@ export const deleteListing = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  console.log(req.body.id, "req.body.id");
-  console.log(req.params.listingId, "req.params.listingId");
   if (req.user.id !== req.body.id) {
     return next(errorHandler(403, "You are not allowed to delete the listing"));
   }

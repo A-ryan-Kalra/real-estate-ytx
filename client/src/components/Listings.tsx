@@ -53,8 +53,7 @@ function Listings() {
     <div className="my-10 w-full">
       <div className="flex flex-col items-center">
         <h1 className="text-2xl">Your Listings</h1>
-        {listing &&
-          listing?.length > 0 &&
+        {listing && listing?.length > 0 ? (
           listing.map((list: ListingDataProps, index: number) => (
             <div
               key={index}
@@ -87,7 +86,10 @@ function Listings() {
                 </Link>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="my-4">No listings yet</div>
+        )}
       </div>
     </div>
   );

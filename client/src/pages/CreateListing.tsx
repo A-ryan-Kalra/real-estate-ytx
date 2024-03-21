@@ -83,7 +83,7 @@ function CreateListing() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ formData }),
       });
       const data = await res.json();
       setLoading(false);
@@ -173,7 +173,7 @@ function CreateListing() {
       console.log("All files uploaded successfully");
     });
   };
-  // console.log(formData);
+  console.log(formData);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
@@ -214,6 +214,10 @@ function CreateListing() {
     setImgFileUrl1(filteredUrls1);
   };
   const handleUploadImage = () => {
+    if (imgFileUrl1.length === 0) {
+      setError("No images selected yet.");
+      return null;
+    }
     setImgFile(true);
     setLoading(true);
   };

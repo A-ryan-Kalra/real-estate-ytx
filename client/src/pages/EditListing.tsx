@@ -13,7 +13,6 @@ import { ClipLoader } from "react-spinners";
 import { useParams, useNavigate } from "react-router-dom";
 
 function EditListing() {
-  const [checked, setChecked] = useState("rent");
   const { currentUser } = useSelector((state: any) => state.user);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,6 +32,7 @@ function EditListing() {
     parking: false,
     type: "rent",
   } as ListingDataProps);
+
   const [imgUploadingProgress, setImageFileUploadingProgress] = useState<
     string[] | null
   >(["0"]);
@@ -42,7 +42,8 @@ function EditListing() {
   const [success, setSuccess] = useState("");
   const [imgLink, setImgLink] = useState<string[]>([]);
   const urlParams = useParams();
-  const [editListing, setEditListing] = useState<ListingDataProps>();
+  const [editListing, setEditListing] = useState<boolean>(false);
+  const [checked, setChecked] = useState("");
   const [switchSides, setSwitchSides] = useState(false);
 
   useEffect(() => {
@@ -50,23 +51,33 @@ function EditListing() {
       try {
         const list = await fetch(`/api/listing/getlisting/${currentUser._id}`);
         const data = await list.json();
-        console.log(data);
-        console.log(urlParams.id);
+        // console.log(data);
+        // console.log(urlParams.id);
         if (list.ok) {
-          const filtered = data.find(
+          const filtered: ListingDataProps = data.find(
             (dat: ListingDataProps) => dat._id === urlParams.id
           );
-          setEditListing(filtered);
+          setChecked(filtered?.type as string);
+          // setImgFileUrl(filtered?.imageUrls);
+          setImgLink(filtered.imageUrls);
+
+          // setEditListing(filtered);
+          setFormData(filtered);
         } else {
           console.log(data.message);
+          setError(data.message);
         }
       } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        }
         console.error(error);
       }
     };
     getList();
   }, []);
-  console.log(editListing);
+  // console.log(editListing);
+  console.log(formData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>
@@ -129,16 +140,18 @@ function EditListing() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (imgFile && !error) {
       uploadImage();
     }
-    if (imgFileUrl.length > 0 || loading) {
-      setImgFile1(true);
-    } else {
-      setImgFile1(false);
-    }
-  }, [imgFile, imgFileUrl]);
+    // if (editListing || loading) {
+    //   setImgFile1(true);
+    // } else {
+    //   setImgFile1(false);
+    // }
+  }, [imgFile]);
+
   useEffect(() => {
     if (imgLink.length > 0) {
       setFormData((prev) => ({
@@ -149,6 +162,7 @@ function EditListing() {
   }, [imgLink]);
 
   const uploadImage = async () => {
+    // alert("asdwasd");
     setLoading(true);
     setError("");
     setSuccess("");
@@ -187,6 +201,7 @@ function EditListing() {
             setImgFileUrl([]);
             setImgFileUrl1([]);
             setImgLink((prev) => [...prev, downloadUrl]);
+            setEditListing(false);
             setLoading(false);
             setImgFile1(false);
             setImgFile(false);
@@ -199,55 +214,55 @@ function EditListing() {
       console.log("All files uploaded successfully");
     });
   };
-  // console.log(formData);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
     setSuccess("");
-    setLoading(true);
+    setEditListing(true);
+
     setImgFile1(true);
     const fileArray: File[] = Array.from(e.target.files as FileList);
     // 3999999;
-    setTimeout(() => {
-      let hasError = false;
-      for (const i of fileArray) {
-        if (i.size > 3999999) {
-          setError(i.name.slice(0, 20) + "Image should be less than 4mb");
-          setImgFileUrl([]);
-          setImgFileUrl1([]);
-          setLoading(false);
-          e.target.value = "";
 
-          hasError = true;
-          return null;
-        } else {
-          setImgFileUrl((prev) => [...prev, URL.createObjectURL(i)]);
-          setImgFileUrl1((prev) => [...prev, i]);
-        }
+    let hasError = false;
+    for (const i of fileArray) {
+      if (i.size > 3999999) {
+        setError(i.name.slice(0, 20) + "Image should be less than 4mb");
+        setImgFileUrl([]);
+        setImgFileUrl1([]);
+        e.target.value = "";
+
+        hasError = true;
+        return null;
+      } else {
+        setImgFileUrl((prev) => [...prev, URL.createObjectURL(i)]);
+        setImgFileUrl1((prev) => [...prev, i]);
       }
-      setLoading(false);
-
-      // if (!hasError) {
-      //   setImgFile(fileArray);
-      //   console.log("outside");
-      // }
-    }, 800);
+    }
+    e.target.value = "";
+    // if (!hasError) {
+    //   setImgFile(fileArray);
+    //   console.log("outside");
+    // }
   };
   const handleImgUrlDelete = (image: string, index: number) => {
     const filteredUrls = imgFileUrl.filter((img) => img !== image);
-    setImgFileUrl(filteredUrls);
-    const filteredUrls1 = imgFileUrl1.filter((_, ind) => ind !== index);
-    setImgFileUrl1(filteredUrls1);
+
+    setImgLink(filteredUrls);
   };
   const handleUploadImage = () => {
+    if (imgFileUrl1.length === 0) {
+      setError("No images selected yet.");
+      return null;
+    }
     setImgFile(true);
     setLoading(true);
   };
 
   return (
-    <div className="min-h-screen p-2 max-w-[900px] mx-auto">
+    <div className="min-h-screen p-2 max-w-[930px] mx-auto">
       <div className="flex flex-col items-center gap-3  my-8 justify-center">
-        <h1 className="text-3xl font-bold">Create a Listing</h1>
+        <h1 className="text-3xl font-bold">Edit Listing</h1>
         <form
           onSubmit={handleSubmit}
           className="flex md:flex-row flex-col w-full gap-3 p-2"
@@ -260,7 +275,7 @@ function EditListing() {
               maxLength={60}
               className="p-2 rounded-md border-2"
               placeholder="Name"
-              defaultValue={editListing?.name || ""}
+              defaultValue={formData?.name || ""}
               onChange={handleChange}
               required={true}
             />
@@ -269,6 +284,7 @@ function EditListing() {
               id="description"
               placeholder="Description"
               required={true}
+              defaultValue={formData?.description || ""}
               onChange={handleChange}
             ></textarea>
             <input
@@ -276,6 +292,7 @@ function EditListing() {
               className="p-2 rounded-md border-2"
               id="address"
               required={true}
+              defaultValue={formData?.address || ""}
               placeholder="Address"
               onChange={handleChange}
             />
@@ -286,6 +303,7 @@ function EditListing() {
                   type="checkbox"
                   checked={checked === "sale"}
                   id="sale"
+                  // checked={formData?.type === "sale"}
                   onChange={handleChange}
                 />
                 <label className="text-[18px]" htmlFor="sale">
@@ -297,6 +315,7 @@ function EditListing() {
                   className="h-5 w-5"
                   type="checkbox"
                   checked={checked === "rent"}
+                  // checked={formData?.type === "rent"}
                   id="rent"
                   onChange={handleChange}
                 />
@@ -309,6 +328,7 @@ function EditListing() {
                   className="h-5 w-5"
                   type="checkbox"
                   id="parking"
+                  checked={formData?.parking}
                   onChange={handleChange}
                 />
                 <label className="text-[18px]" htmlFor="parking">
@@ -320,6 +340,7 @@ function EditListing() {
                 <input
                   className="h-5 w-5"
                   type="checkbox"
+                  checked={formData?.furnished}
                   id="furnished"
                   onChange={handleChange}
                 />
@@ -333,6 +354,7 @@ function EditListing() {
                   onChange={handleChange}
                   className="h-5 w-5"
                   type="checkbox"
+                  checked={formData?.offer}
                   id="offer"
                 />
                 <label className="text-[18px]" htmlFor="offer">
@@ -346,10 +368,10 @@ function EditListing() {
                   onChange={handleChange}
                   className="w-[100px] h-[50px] border-2 rounded-md p-2"
                   type="number"
-                  min={1}
-                  max={10}
+                  min={"1"}
+                  max={"10"}
                   id="bedrooms"
-                  defaultValue={1}
+                  value={formData?.bedrooms?.toString()}
                 />
                 <label htmlFor="bedrooms">Beds</label>
               </div>
@@ -360,7 +382,7 @@ function EditListing() {
                   type="number"
                   min={1}
                   max={10}
-                  defaultValue={1}
+                  value={formData?.bathrooms.toString()}
                   id="bathrooms"
                 />
                 <label htmlFor="bathrooms">Baths</label>
@@ -372,7 +394,8 @@ function EditListing() {
                 type="number"
                 min={500}
                 max={500000000}
-                defaultValue={0}
+                required
+                defaultValue={formData?.regularPrice.toString()}
                 id="regularPrice"
                 className="w-[150px] h-[50px] border-2 rounded-md p-2"
               />
@@ -391,7 +414,8 @@ function EditListing() {
                   type="number"
                   min={500}
                   max={500000000}
-                  defaultValue={0}
+                  required
+                  defaultValue={formData?.discountPrice?.toString()}
                   id="discountPrice"
                   className="w-[150px] h-[50px] border-2 rounded-md p-2"
                 />
@@ -449,7 +473,7 @@ function EditListing() {
               disabled={imgFile1}
               className="disabled:bg-opacity-20  active:scale-90 duration-300 bg-slate-700 text-white tracking-wide rounded-md p-2 border-2"
             >
-              Create Listing
+              Edit Listing
             </button>
             {error && (
               <div className="border-2 m-2 bg-red-200 text-red-500 rounded-md p-2">
@@ -461,9 +485,9 @@ function EditListing() {
                 {success}
               </div>
             )}
-            {imgFileUrl.length > 0 && (
+            {imgLink.length > 0 && (
               <div className=" p-2 flex flex-col gap-2 max-h-[350px] overflow-y-auto border-2 rounded-md shadow-sm">
-                {imgFileUrl.map((img: string, index: number) => (
+                {imgLink.map((img: string, index: number) => (
                   <div
                     key={index}
                     className="p-2 flex justify-between items-center border-2 rounded-md  shadow-md hover:shadow-teal-300 duration-300 ease-in-out w-full"
