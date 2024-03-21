@@ -60,16 +60,19 @@ function Listings() {
               className=" gap-2 w-full hover:shadow-md hover:shadow-slate-300 duration-300 ease-in-out flex my-2  items-center justify-between rounded-xl overflow-hidden border-2"
             >
               <div className="flex items-start overflow-hidden gap-2">
-                <div className="   ">
+                <Link className="" to={`/listing/${list._id}`}>
                   <img
                     src={list.imageUrls[0]}
                     alt="list"
                     className="object-cover w-[90px] h-[70px]"
                   />
-                </div>
-                <h1 className="text-center p-1 text-[15px] font-semibold">
+                </Link>
+                <Link
+                  to={`/listing/${list._id}`}
+                  className="text-center hover:underline p-1 text-[15px] font-semibold"
+                >
                   {list.name}
-                </h1>
+                </Link>
               </div>
               <div className="flex flex-col gap-1 p-2">
                 <button

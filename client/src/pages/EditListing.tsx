@@ -25,7 +25,7 @@ function EditListing() {
     bedrooms: 1,
     description: "",
     name: "",
-    regularPrice: 500,
+    regularPrice: 0,
     discountPrice: 0,
     furnished: false,
     offer: false,
@@ -45,7 +45,7 @@ function EditListing() {
   const [editListing, setEditListing] = useState<boolean>(false);
   const [checked, setChecked] = useState("");
   const [switchSides, setSwitchSides] = useState(false);
-
+  // console.log(formData);
   useEffect(() => {
     const getList = async () => {
       try {
@@ -127,7 +127,7 @@ function EditListing() {
       if (res.ok) {
         setSuccess("Information saved successfully");
         setFormData({} as ListingDataProps);
-        navigate(`/listing/${formData.userRef}`);
+        navigate(`/listing/${formData._id}`);
       } else {
         setError(data.message);
       }
@@ -246,9 +246,9 @@ function EditListing() {
     // }
   };
   const handleImgUrlDelete = (image: string, index: number) => {
-    const filteredUrls = imgFileUrl.filter((img) => img !== image);
-
-    setImgLink(filteredUrls);
+    // const filteredUrls = imgFileUrl.filter((img) => img !== image);
+    // setImgFile1(true);
+    setImgLink((prev) => prev.filter((img) => img !== image));
   };
   const handleUploadImage = () => {
     if (imgFileUrl1.length === 0) {
@@ -395,7 +395,7 @@ function EditListing() {
                 min={500}
                 max={500000000}
                 required
-                defaultValue={formData?.regularPrice.toString()}
+                value={formData?.regularPrice.toString()}
                 id="regularPrice"
                 className="w-[150px] h-[50px] border-2 rounded-md p-2"
               />
@@ -415,7 +415,7 @@ function EditListing() {
                   min={500}
                   max={500000000}
                   required
-                  defaultValue={formData?.discountPrice?.toString()}
+                  value={formData?.discountPrice?.toString()}
                   id="discountPrice"
                   className="w-[150px] h-[50px] border-2 rounded-md p-2"
                 />

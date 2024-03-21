@@ -8,10 +8,13 @@ import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
+import Listing from "./pages/Listing";
+import ScrollUp from "./components/ScrollUp";
 
 function App() {
   return (
     <div className="">
+      <ScrollUp />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -20,7 +23,7 @@ function App() {
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/edit-listing/:id" element={<EditListing />} />
         </Route>
-
+        <Route path="/listing/:id" element={<Listing />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>

@@ -13,7 +13,7 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { signInSuccess, signOut } from "../redux/user/userSlice";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import Listings from "./Listings";
+import Listings from "./UserListings";
 
 function DashProfile() {
   const [showListing, setShowListing] = useState(false);

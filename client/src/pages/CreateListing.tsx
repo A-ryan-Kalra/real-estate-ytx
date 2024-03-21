@@ -90,7 +90,7 @@ function CreateListing() {
       if (res.ok) {
         setSuccess("Information saved successfully");
         setFormData({} as ListingDataProps);
-        navigate(`/listing/${formData.userRef}`);
+        navigate(`/listing/${data._id}`);
       } else {
         setError(data.message);
       }

@@ -12,8 +12,6 @@ export const createListing = async (
   if (req.user.id !== req.params.userId) {
     next(errorHandler(403, "You are not allowed to create the listing"));
   }
-  console.log(req.body);
-  console.log("req.body");
 
   const { formData } = req.body;
   try {
@@ -117,6 +115,22 @@ export const editListing = async (
       );
     }
     res.status(200).json(editedListing);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSpecificListing = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const getlist = await listing.findById(req.params.id);
+    if (!getlist) {
+      return next(errorHandler(404, "The listing does not exist"));
+    }
+    return res.status(200).json(getlist);
   } catch (error) {
     next(error);
   }
