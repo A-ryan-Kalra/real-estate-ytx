@@ -173,7 +173,7 @@ function CreateListing() {
       console.log("All files uploaded successfully");
     });
   };
-  console.log(formData);
+  // console.log(formData);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
@@ -223,7 +223,7 @@ function CreateListing() {
   };
 
   return (
-    <div className="min-h-screen p-2 max-w-[900px] mx-auto">
+    <div className="min-h-screen p-2 max-w-[930px] mx-auto">
       <div className="flex flex-col items-center gap-3  my-8 justify-center">
         <h1 className="text-3xl font-bold">Create a Listing</h1>
         <form
@@ -373,10 +373,10 @@ function CreateListing() {
                   className="w-[150px] h-[50px] border-2 rounded-md p-2"
                 />
                 <label
-                  htmlFor="regularPrice"
+                  htmlFor="discountPrice"
                   className="flex flex-col items-center"
                 >
-                  <h1>Regular price</h1>
+                  <h1>Discount price</h1>
                   <h1 className="text-sm">
                     {" "}
                     {formData.type === "rent" ? "(₹ / Month)" : "(₹)"}

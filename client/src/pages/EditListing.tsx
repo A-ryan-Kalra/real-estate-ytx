@@ -51,8 +51,7 @@ function EditListing() {
       try {
         const list = await fetch(`/api/listing/getlisting/${currentUser._id}`);
         const data = await list.json();
-        // console.log(data);
-        // console.log(urlParams.id);
+
         if (list.ok) {
           const filtered: ListingDataProps = data.find(
             (dat: ListingDataProps) => dat._id === urlParams.id
@@ -64,7 +63,6 @@ function EditListing() {
           // setEditListing(filtered);
           setFormData(filtered);
         } else {
-          console.log(data.message);
           setError(data.message);
         }
       } catch (error) {
@@ -77,7 +75,7 @@ function EditListing() {
     getList();
   }, []);
   // console.log(editListing);
-  console.log(formData);
+  // console.log(formData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>
@@ -115,14 +113,16 @@ function EditListing() {
     setSuccess("");
     setLoading(true);
     try {
-      const res = await fetch(`/api/listing/create/${currentUser._id}`, {
-        method: "POST",
+      const res = await fetch(`/api/listing/editlisting/${formData._id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ formData }),
       });
       const data = await res.json();
+      // console.log(data);
+      // console.log("Updateddata");
       setLoading(false);
       if (res.ok) {
         setSuccess("Information saved successfully");
@@ -420,10 +420,10 @@ function EditListing() {
                   className="w-[150px] h-[50px] border-2 rounded-md p-2"
                 />
                 <label
-                  htmlFor="regularPrice"
+                  htmlFor="discountPrice"
                   className="flex flex-col items-center"
                 >
-                  <h1>Regular price</h1>
+                  <h1>Discount price</h1>
                   <h1 className="text-sm">
                     {" "}
                     {formData.type === "rent" ? "(₹ / Month)" : "(₹)"}
