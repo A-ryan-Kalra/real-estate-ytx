@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import useGetListing from "../hooks/useGetListing";
 import { useEffect, useState } from "react";
 import { ListingDataProps } from "../constants/types";
-
+import { Icon } from "@iconify/react";
 import {
   Autoplay,
   Keyboard,
@@ -15,19 +15,37 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import {
-  HiClipboardCopy,
-  HiLocationMarker,
-  HiOutlinePaperClip,
-} from "react-icons/hi";
+import { HiLocationMarker, HiOutlinePaperClip } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 function Listing() {
+  const { currentUser } = useSelector((state: any) => state.user);
+  const [contact, setContact] = useState(false);
   const urlParams = useParams();
   const { data, error, isLoading, mutate } = useGetListing(
     urlParams.id as string
   );
   const [listing, setListing] = useState<ListingDataProps>(data);
   const [show, setSHow] = useState(false);
+
+  useEffect(() => {
+    const postUser = async () => {
+      try {
+        const res = await fetch(`/api/user/getUser/${listing?.userRef}`);
+        const data = await res.json();
+        if (res.ok) {
+          console.log(data);
+          console.log("User's post");
+        } else {
+          console.log(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    postUser();
+  }, [listing]);
+
   useEffect(() => {
     setListing(data);
   }, [data]);
@@ -102,7 +120,7 @@ function Listing() {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
           })}
-          / month
+          {listing?.type == "rent" ? "/ month" : ""}
         </h1>
         <p className="flex text-lg text-slate-600 gap-3 my-3">
           <span>
@@ -127,7 +145,48 @@ function Listing() {
           <span className="font-semibold">Description</span> -{" "}
           {listing?.description}
         </h1>
-        <div></div>
+        <ul className="flex items-center gap-4 flex-wrap">
+          <li className="flex items-center gap-2 whitespace-nowrap ">
+            <Icon className="text-teal-800" icon="fa:bath" width={20} />{" "}
+            {listing?.bathrooms} Baths
+          </li>
+          <li className="flex items-center gap-2 whitespace-nowrap ">
+            <Icon className="text-teal-800" icon="fa:bed" width={20} />{" "}
+            {listing?.bedrooms} Beds
+          </li>
+          <li className="flex items-center gap-2 whitespace-nowrap ">
+            <Icon
+              className="text-teal-800"
+              icon="fluent:vehicle-car-parking-20-filled"
+              width={20}
+            />
+            {listing?.parking ? "Parking spot" : "No Parking"}
+          </li>
+          <li className="flex items-center gap-2 whitespace-nowrap ">
+            <Icon className="text-teal-800" icon="solar:sofa-bold" width={20} />{" "}
+            {listing?.furnished ? "Furnished" : "Not Furnished"}
+          </li>
+        </ul>
+        {!contact && listing?.userRef === currentUser._id && (
+          <button
+            onClick={() => setContact(true)}
+            className="border-2 p-2 rounded-md shadow-md  bg-indigo-700 font-semibold text-white border-indigo-400 hover:scale-105 duration-300 ease-in-out"
+          >
+            Contact Landlord
+          </button>
+        )}
+        {contact && (
+          <div>
+            <textarea
+              className="w-full p-2  resize-none rounded-md bg-slate-200 h-20 placeholder:text-slate-800"
+              placeholder="Enter your message here"
+            />
+            <h1>Contact</h1>
+            <button className="border-2 p-2 rounded-md shadow-md  bg-indigo-600 hover:bg-opacity-90 font-semibold text-white border-indigo-400  duration-200 ease-in-out w-full">
+              Send Message
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
