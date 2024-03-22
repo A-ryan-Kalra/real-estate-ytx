@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { CommentProps } from "../constants/types";
 import useGetListingComments from "../hooks/useGetListingComments";
 import CommentsSection from "./CommentsSection";
-import ScrollUp from "./ScrollUp";
 
 function Comments({
   currentUser,
@@ -11,11 +10,12 @@ function Comments({
   currentUser: any;
   postId: string;
 }) {
+  //   console.log(postId);
   const { data, error, isLoading, mutate } = useGetListingComments(postId);
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [formData, setFormData] = useState<CommentProps>({
     content: "",
-    like: false,
+    likes: [],
     postId,
     userId: currentUser._id,
   });
@@ -123,7 +123,7 @@ function Comments({
         >
           {Comments?.length > 0 ? (
             comments?.map((comment: CommentProps, index: number) => (
-              <CommentsSection key={index} comment={comment} />
+              <CommentsSection mutate={mutate} key={index} comment={comment} />
             ))
           ) : (
             <div></div>

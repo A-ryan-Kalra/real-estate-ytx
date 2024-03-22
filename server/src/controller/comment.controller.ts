@@ -45,3 +45,26 @@ export const getComments = async (
     next(error);
   }
 };
+
+export const deleteComment = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    if (!req.user.isAdmin && req.user.id !== req.body.userId) {
+      return next(
+        errorHandler(403, "You are not allowed to delete this comment")
+      );
+    }
+    const deletedComment = await Comment.findByIdAndDelete({
+      _id: req.params.commentId,
+    });
+    if (!deletedComment) {
+      return next(errorHandler(404, "Comment does not exist"));
+    }
+    res.status(200).json("User has been deleted");
+  } catch (error) {
+    next(error);
+  }
+};

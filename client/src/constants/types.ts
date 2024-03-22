@@ -29,8 +29,9 @@ export interface ListingDataProps {
 }
 
 export interface CommentProps {
+  _id?: string;
   content: string;
-  like: boolean;
+  likes?: string[];
   postId: string;
   userId: string;
   updatedAt?: string;
