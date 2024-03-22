@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ListingDataProps } from "../constants/types";
 import { Link } from "react-router-dom";
+import { signOut } from "../redux/user/userSlice";
 
 function Listings() {
   const { currentUser } = useSelector((state: any) => state.user);
   const [listing, setListing] = useState<ListingDataProps[]>([]);
+  const [errorUpdate, setErrorUpdate] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const listings = async () => {
@@ -17,14 +20,21 @@ function Listings() {
         // console.log(data);
         if (result.ok) {
           setListing(data as ListingDataProps[]);
+        } else {
+          setErrorUpdate(data.message);
         }
+        console.log(data);
       } catch (error) {
+        if (error instanceof Error) {
+          setErrorUpdate(error.message);
+        }
         console.error(error);
+        setErrorUpdate("Ann error occured");
       }
     };
     listings();
   }, []);
-  console.log(listing);
+  console.log(errorUpdate);
 
   const handleDelete = async (id: string) => {
     try {
@@ -48,6 +58,21 @@ function Listings() {
       console.error(error);
     }
   };
+
+  const handleSession = () => {
+    dispatch(signOut());
+  };
+
+  if (errorUpdate) {
+    return (
+      <div
+        className="text-xl border-2 p-3 rounded-md hover:shadow-md hover:shadow-slate-300 duration-300 ease-in-out cursor-pointer"
+        onClick={handleSession}
+      >
+        Session has been expired, try signing in again
+      </div>
+    );
+  }
 
   return (
     <div className="my-10 w-full">

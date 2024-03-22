@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useGetListing from "../hooks/useGetListing";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ListingDataProps } from "../constants/types";
 import { Icon } from "@iconify/react";
 import {
@@ -25,6 +25,8 @@ function Listing() {
   const { data, error, isLoading, mutate } = useGetListing(
     urlParams.id as string
   );
+  const [message, setMessage] = useState("");
+  const [userPost, setUserPost] = useState<any>();
   const [listing, setListing] = useState<ListingDataProps>(data);
   const [show, setSHow] = useState(false);
 
@@ -34,16 +36,18 @@ function Listing() {
         const res = await fetch(`/api/user/getUser/${listing?.userRef}`);
         const data = await res.json();
         if (res.ok) {
-          console.log(data);
-          console.log("User's post");
+          // console.log(data);
+          setUserPost(data);
         } else {
-          console.log(data);
+          console.error(data);
         }
       } catch (error) {
         console.error(error);
       }
     };
-    postUser();
+    if (listing && Object.keys(listing).length > 0) {
+      postUser();
+    }
   }, [listing]);
 
   useEffect(() => {
@@ -59,7 +63,11 @@ function Listing() {
     }
   }, [show]);
 
-  console.log(listing);
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+  };
+
+  console.log(message);
   const copyLink = async () => {
     await window.navigator.clipboard.writeText(window.location.href);
     setSHow(true);
@@ -75,7 +83,7 @@ function Listing() {
           <HiOutlinePaperClip size={40} className="  text-slate-600" />
         </div>
         {show && (
-          <div className="absolute top-32 border-2 border-slate-500 text-white duration-500 ease-in-out  cursor-pointer  z-[10] p-2 right-16 rounded-full bg-slate-500">
+          <div className="absolute top-32 border-2 border-slate-500 text-white duration-500 ease-in-out  cursor-default  z-[10] p-2 right-16 rounded-full bg-slate-500">
             Link Copied
           </div>
         )}
@@ -100,10 +108,11 @@ function Listing() {
           {listing?.imageUrls?.map((i: string, index: number) => (
             <SwiperSlide
               key={index}
-              className="w-full  overflow-hidden px-[5px] pb-7 pt-1 h-full"
+              className="w-full  overflow-hidden px-[5px] pb-7 pt-0.5 h-full"
             >
               <img
                 alt="img"
+                loading="lazy"
                 className="object-cover rounded-xl  relative  w-full h-full"
                 src={i || ""}
               />
@@ -129,10 +138,10 @@ function Listing() {
           {listing?.address}
         </p>
         <div className="flex gap-3">
-          <div className="bg-slate-400 py-2 px-10 text-slate-100 font-semibold rounded-xl shadow-md">
+          <div className="bg-slate-400 whitespace-nowrap py-2 px-4 md:px-10 text-slate-100 font-semibold rounded-xl shadow-md">
             {listing?.type === "rent" ? "For Rent" : "For Sale"}
           </div>
-          <div className="bg-teal-500 py-2 px-10 text-slate-100 font-semibold rounded-xl shadow-md">
+          <div className="bg-teal-500 py-2 px-4 md:px-10 text-slate-100 font-semibold rounded-xl shadow-md">
             ₹
             {listing?.discountPrice!.toLocaleString("en-IN", {
               minimumFractionDigits: 0,
@@ -141,7 +150,7 @@ function Listing() {
             discount
           </div>
         </div>
-        <h1 className="text-slate-800 tracking-wider line">
+        <h1 className="text-slate-800 tracking-wider my-3">
           <span className="font-semibold">Description</span> -{" "}
           {listing?.description}
         </h1>
@@ -178,13 +187,22 @@ function Listing() {
         {contact && (
           <div>
             <textarea
+              onChange={handleChange}
+              value={message}
               className="w-full p-2  resize-none rounded-md bg-slate-200 h-20 placeholder:text-slate-800"
               placeholder="Enter your message here"
             />
-            <h1>Contact</h1>
-            <button className="border-2 p-2 rounded-md shadow-md  bg-indigo-600 hover:bg-opacity-90 font-semibold text-white border-indigo-400  duration-200 ease-in-out w-full">
+            <h1 className="my-2">
+              Contact{" "}
+              <span className="font-semibold">{userPost?.username}</span> for{" "}
+              <span className="font-semibold">{listing?.name}</span>
+            </h1>
+            <Link
+              to={`mailto:${userPost?.email}?subject=Regarding ${listing.name}&body=${message}`}
+              className="border-2 p-2 rounded-md shadow-md  bg-indigo-600 hover:bg-opacity-90 font-semibold text-white border-indigo-400  duration-200 ease-in-out w-full"
+            >
               Send Message
-            </button>
+            </Link>
           </div>
         )}
       </div>
