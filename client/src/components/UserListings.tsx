@@ -23,7 +23,7 @@ function Listings() {
         } else {
           setErrorUpdate(data.message);
         }
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         if (error instanceof Error) {
           setErrorUpdate(error.message);
@@ -34,7 +34,7 @@ function Listings() {
     };
     listings();
   }, []);
-  console.log(errorUpdate);
+  // console.log(errorUpdate);
 
   const handleDelete = async (id: string) => {
     try {
@@ -46,7 +46,7 @@ function Listings() {
         body: `id=${currentUser._id}`,
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       if (res.ok) {
         setListing((prev) =>
           prev.filter((list: ListingDataProps) => list._id !== id)

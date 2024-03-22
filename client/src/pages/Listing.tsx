@@ -17,6 +17,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { HiLocationMarker, HiOutlinePaperClip } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import Comments from "../components/Comments";
 
 function Listing() {
   const { currentUser } = useSelector((state: any) => state.user);
@@ -67,7 +68,6 @@ function Listing() {
     setMessage(e.target.value);
   };
 
-  console.log(message);
   const copyLink = async () => {
     await window.navigator.clipboard.writeText(window.location.href);
     setSHow(true);
@@ -99,7 +99,7 @@ function Listing() {
             clickable: true,
           }}
           navigation={true}
-          loop={true}
+          loop={listing?.imageUrls?.length > 1 ? true : false}
           mousewheel={true}
           keyboard={true}
           className="w-full flex overflow-hidden items-center h-full"
@@ -185,7 +185,7 @@ function Listing() {
           </button>
         )}
         {contact && (
-          <div>
+          <div className="flex flex-col gap-1">
             <textarea
               onChange={handleChange}
               value={message}
@@ -199,12 +199,13 @@ function Listing() {
             </h1>
             <Link
               to={`mailto:${userPost?.email}?subject=Regarding ${listing.name}&body=${message}`}
-              className="border-2 p-2 rounded-md shadow-md  bg-indigo-600 hover:bg-opacity-90 font-semibold text-white border-indigo-400  duration-200 ease-in-out w-full"
+              className="border-2 p-2 rounded-md flex-1 shadow-md text-center bg-indigo-600 hover:bg-opacity-90 font-semibold text-white border-indigo-400  duration-200 ease-in-out w-full"
             >
               Send Message
             </Link>
           </div>
         )}
+        <Comments currentUser={currentUser} />
       </div>
     </div>
   );
