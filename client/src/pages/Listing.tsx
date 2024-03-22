@@ -205,7 +205,7 @@ function Listing() {
             </Link>
           </div>
         )}
-        <Comments currentUser={currentUser} />
+        <Comments currentUser={currentUser} postId={userPost?._id} />
       </div>
     </div>
   );

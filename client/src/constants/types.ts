@@ -3,6 +3,9 @@ export interface FormDataProps {
   password?: string;
   username?: string;
   profilePicture?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  isAdmin?: string;
 }
 
 export interface ListingDataProps {
@@ -23,4 +26,13 @@ export interface ListingDataProps {
   _id?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface CommentProps {
+  content: string;
+  like: boolean;
+  postId: string;
+  userId: string;
+  updatedAt?: string;
+  createdAt?: string;
 }

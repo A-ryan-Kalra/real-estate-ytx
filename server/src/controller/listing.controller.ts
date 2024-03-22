@@ -46,10 +46,10 @@ export const getListings = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  if (!req.user.isAdmin) {
-    next(errorHandler(403, "You are not allowed to see all the listings"));
-  }
   try {
+    if (!req.user.isAdmin) {
+      next(errorHandler(403, "You are not allowed to see all the listings"));
+    }
     const allListings = await listing.find();
     return res.status(200).json(allListings);
   } catch (error) {

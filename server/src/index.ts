@@ -6,6 +6,7 @@ import connectDb from "./config/dbConfig";
 import userRouter from "./routes/user.router";
 import listingRouter from "./routes/listing.router";
 import cookieparse from "cookie-parser";
+import commentRoute from "./routes/comment.route";
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
@@ -19,6 +20,7 @@ app.get("/api/test", testing);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+app.use("/api/comment", commentRoute);
 
 app.listen(PORT, () => {
   console.log("Port is successfully running on ", PORT);
