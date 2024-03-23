@@ -2,6 +2,7 @@ import express from "express";
 import { UserProps } from "../utils/verifyUser";
 import errorHandler from "../utils/errorHandler";
 import Comment from "../models/comment.model";
+import { nextTick } from "process";
 
 export const createComment = async (
   req: UserProps,
@@ -23,6 +24,33 @@ export const createComment = async (
     // }
     await createComment.save();
     return res.status(201).json(createComment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editComment = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const { message } = req.body;
+
+    const comment = await Comment.findById(req.params.commentId);
+    if (!req.user.isAdmin && req.user.id !== comment?.userId) {
+      next(errorHandler(403, "You are not allowed to edit the comment"));
+    }
+    const editComment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      {
+        content: message,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(201).json(editComment);
   } catch (error) {
     next(error);
   }
@@ -52,18 +80,40 @@ export const deleteComment = async (
   next: express.NextFunction
 ) => {
   try {
-    if (!req.user.isAdmin && req.user.id !== req.body.userId) {
+    const commentid = await Comment.findById(req.params.commentId);
+    // console.log()
+    if (!commentid) {
+      return next(errorHandler(404, "Comment does not exist"));
+    }
+    if (!req.user.isAdmin && req.user.id !== commentid?.userId) {
       return next(
         errorHandler(403, "You are not allowed to delete this comment")
       );
     }
-    const deletedComment = await Comment.findByIdAndDelete({
-      _id: req.params.commentId,
-    });
-    if (!deletedComment) {
-      return next(errorHandler(404, "Comment does not exist"));
-    }
+    await Comment.findByIdAndDelete(req.params.commentId);
     res.status(200).json("User has been deleted");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const likeComment = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const likecomment = await Comment.findById(req.params.commentId);
+    if (!likecomment) {
+      return next(errorHandler(404, "Comment not found"));
+    }
+    if (!likecomment.likes.includes(req.user.id)) {
+      likecomment.likes.push(req.user.id);
+    } else {
+      likecomment.likes = likecomment.likes.filter((id) => id !== req.user.id);
+    }
+    await likecomment.save();
+    return res.status(200).json(likecomment);
   } catch (error) {
     next(error);
   }

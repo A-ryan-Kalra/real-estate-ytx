@@ -50,7 +50,7 @@ function Listing() {
       postUser();
     }
   }, [listing]);
-
+  // console.log(listing);
   useEffect(() => {
     setListing(data);
   }, [data]);
@@ -205,7 +205,7 @@ function Listing() {
             </Link>
           </div>
         )}
-        <Comments currentUser={currentUser} postId={userPost?._id} />
+        <Comments currentUser={currentUser} postId={listing?._id as string} />
       </div>
     </div>
   );
