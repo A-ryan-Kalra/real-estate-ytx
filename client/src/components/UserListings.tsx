@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ListingDataProps } from "../constants/types";
 import { Link } from "react-router-dom";
 import { signOut } from "../redux/user/userSlice";
+import { ClipLoader } from "react-spinners";
 
 function Listings() {
   const { currentUser } = useSelector((state: any) => state.user);
@@ -115,6 +116,15 @@ function Listings() {
               </div>
             </div>
           ))
+        ) : listing && listing.length === 0 ? (
+          <div className="  w-full items-center flex justify-center my-2">
+            <ClipLoader
+              size={50}
+              color="#36d7b7"
+              speedMultiplier={2}
+              className="max-lg:translate-y-[-25%]  mx-auto relative max-lg:bottom-[25%] "
+            />
+          </div>
         ) : (
           <div className="my-4">No listings yet</div>
         )}
