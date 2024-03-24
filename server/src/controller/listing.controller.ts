@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import express from "express";
 import { UserProps } from "../utils/verifyUser";
-import listing from "../models/listing.model";
 import errorHandler from "../utils/errorHandler";
+import listing from "../models/listing.model";
 
 export const createListing = async (
   req: UserProps,
@@ -131,6 +131,64 @@ export const getSpecificListing = async (
       return next(errorHandler(404, "The listing does not exist"));
     }
     return res.status(200).json(getlist);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSearchedItem = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const reqQuery = req.query as {
+    limit?: string;
+    startIndex?: string;
+    offer?: boolean;
+    furnished?: boolean;
+    parking?: boolean;
+    type?: string;
+    searchTerm?: string;
+    sort?: string;
+    order?: string;
+  };
+
+  const limit = parseInt(reqQuery.limit as string, 10) || 9;
+  const startIndex = parseInt(reqQuery.startIndex as string, 10) || 0;
+  const searchTerm = reqQuery.searchTerm || "";
+  const sort = reqQuery.sort || "createdAt";
+  const order = reqQuery.order || "desc";
+
+  let query: any = {
+    name: { $regex: searchTerm, $options: "i" },
+  };
+
+  if (reqQuery.offer) {
+    query.offer = reqQuery.offer;
+  }
+
+  if (reqQuery.furnished) {
+    query.furnished = reqQuery.furnished;
+  }
+
+  if (reqQuery.parking) {
+    query.parking = reqQuery.parking;
+  }
+
+  if (reqQuery.type) {
+    query.type = reqQuery.type;
+  }
+
+  try {
+    let sortObj: any = {};
+    sortObj[sort] = order;
+
+    const listings = await listing
+      .find(query)
+      .sort(sortObj)
+      .skip(startIndex)
+      .limit(limit);
+    return res.status(200).json(listings);
   } catch (error) {
     next(error);
   }

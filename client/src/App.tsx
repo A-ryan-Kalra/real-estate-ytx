@@ -10,6 +10,7 @@ import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
 import Listing from "./pages/Listing";
 import ScrollUp from "./components/ScrollUp";
+import Search from "./pages/Search";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/edit-listing/:id" element={<EditListing />} />
         </Route>
         <Route path="/listing/:id" element={<Listing />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>
