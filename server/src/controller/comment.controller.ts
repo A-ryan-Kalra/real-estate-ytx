@@ -118,3 +118,19 @@ export const likeComment = async (
     next(error);
   }
 };
+
+export const getAllComments = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    if (!req.user.isAdmin) {
+      next(errorHandler(403, "You are not allowed to see all the listings"));
+    }
+    const allComments = await Comment.find().sort({ createdAt: "desc" });
+    return res.status(200).json(allComments);
+  } catch (error) {
+    next(error);
+  }
+};

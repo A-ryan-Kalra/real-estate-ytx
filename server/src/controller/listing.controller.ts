@@ -50,7 +50,7 @@ export const getListings = async (
     if (!req.user.isAdmin) {
       next(errorHandler(403, "You are not allowed to see all the listings"));
     }
-    const allListings = await listing.find();
+    const allListings = await listing.find().sort({ createdAt: "desc" });
     return res.status(200).json(allListings);
   } catch (error) {
     next(error);

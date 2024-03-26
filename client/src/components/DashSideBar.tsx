@@ -63,7 +63,7 @@ function DashSideBar({ tab }: { tab: string }) {
               className={`${tab !== "posts" && "text-slate-500"}`}
               size={25}
             />
-            <h1 className="text-lg">Posts</h1>
+            <h1 className="text-lg">Listings</h1>
           </Link>
 
           <Link

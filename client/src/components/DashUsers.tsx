@@ -40,7 +40,7 @@ function DashUsers() {
       console.error(error);
     }
   };
-  console.log(user);
+  //   console.log(user);
   return (
     <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
       {currentUser?.isAdmin && user?.length > 0 ? (

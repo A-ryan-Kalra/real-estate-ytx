@@ -49,7 +49,7 @@ export const getUsers = async (
     next(errorHandler(405, "You are not allowed to see all users"));
   }
   try {
-    const getAllUser: any = await User.find();
+    const getAllUser: any = await User.find().sort({ createdAt: "desc" });
     let arr: any = [];
     getAllUser.map((user: any) => {
       const { password, ...rest } = user._doc;
