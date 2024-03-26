@@ -50,8 +50,15 @@ export const getUsers = async (
   }
   try {
     const getAllUser: any = await User.find();
-
-    return res.status(200).json(getAllUser);
+    let arr: any = [];
+    getAllUser.map((user: any) => {
+      const { password, ...rest } = user._doc;
+      arr.push(rest);
+      // console.log(rest);
+    });
+    // console.log(arr);
+    // console.log("rest");
+    return res.status(200).json(arr);
   } catch (error) {
     next(error);
   }

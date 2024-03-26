@@ -6,6 +6,7 @@ export interface FormDataProps {
   updatedAt?: string;
   createdAt?: string;
   isAdmin?: string;
+  _id?: string;
 }
 
 export interface ListingDataProps {
