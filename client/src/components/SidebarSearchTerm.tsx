@@ -1,6 +1,112 @@
+import React, { useEffect, useState } from "react";
+import { ListingDataProps, SearchProps } from "../constants/types";
+import { useLocation, useNavigate } from "react-router-dom";
+import useGetSearchedItem from "../hooks/useGetSearchedItem";
+
 function SidebarSearchTerm() {
+  const [check, setChecked] = useState<string>("all");
+  const [formData, setFormData] = useState<SearchProps>({
+    type: check,
+    searchTerm: "",
+    furnished: false,
+    offer: false,
+    sort: "createdAt_desc",
+    order: "desc",
+    parking: false,
+  });
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const { data, error, isLoading, mutate } = useGetSearchedItem(
+    urlParams.toString()
+  );
+  const [post, setPost] = useState<ListingDataProps[]>([]);
+
+  // console.log(location.search);
+  // console.log(formData);
+
+  useEffect(() => {
+    if (data?.length > 0) {
+      setPost(data);
+    }
+  }, [data]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    urlParams.set("searchTerm", formData?.searchTerm as string);
+    urlParams.set("type", formData?.type as string);
+    urlParams.set("parking", formData?.parking as unknown as string);
+    urlParams.set("furnished", formData?.furnished as unknown as string);
+    urlParams.set("sort", formData?.sort as string);
+    urlParams.set("order", formData?.order as string);
+    urlParams.set("offer", formData?.offer as unknown as string);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
+  useEffect(() => {
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    const typeFromUrl = urlParams.get("type");
+    const parkingFromUrl = urlParams.get("parking");
+    const furnishedFromUrl = urlParams.get("furnished");
+    const sortFromUrl = urlParams.get("sort");
+    const orderFromUrl = urlParams.get("order");
+    const offerFromUrl = urlParams.get("offer");
+    setFormData({
+      searchTerm: searchTermFromUrl || formData.searchTerm,
+      type: typeFromUrl || formData.type,
+      parking: Boolean(parkingFromUrl) || formData.parking,
+      furnished: Boolean(furnishedFromUrl) || formData.furnished,
+      sort: sortFromUrl || formData.sort,
+      order: orderFromUrl || formData.order,
+      offer: Boolean(offerFromUrl) || formData.offer,
+    });
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (
+      e.target.id === "all" ||
+      e.target.id === "rent" ||
+      e.target.id === "sale"
+    ) {
+      setChecked(e.target.id);
+      setFormData((prev: any) => ({
+        ...prev,
+        type: e.target.id,
+      }));
+    } else if (e.target.type === "checkbox") {
+      setFormData((prev: any) => ({
+        ...prev,
+        [e.target.id]: e.target.checked,
+      }));
+    } else {
+      setFormData((prev: any) => ({
+        ...prev,
+        [e.target.id]: e.target.value,
+      }));
+    }
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (
+      e.target.value === "regularPrice_desc" ||
+      e.target.value === "createdAt_desc"
+    ) {
+      setFormData((prev: any) => ({
+        ...prev,
+        sort: e?.target?.value,
+        order: "desc",
+      }));
+    } else if (
+      e.target.value === "regularPrice_asc" ||
+      e.target.value === "createdAt_asc"
+    ) {
+      setFormData((prev: any) => ({
+        ...prev,
+        sort: e?.target?.value,
+        order: "asc",
+      }));
+    }
   };
 
   return (
@@ -13,7 +119,9 @@ function SidebarSearchTerm() {
         <input
           type="search"
           name=""
-          id="search"
+          onChange={handleChange}
+          value={formData?.searchTerm}
+          id="searchTerm"
           placeholder="Search..."
           autoComplete="off"
           className="border-2 resize-none focus-visible:outline-none p-2 rounded-md"
@@ -22,25 +130,49 @@ function SidebarSearchTerm() {
       <div className="flex gap-3 flex-wrap">
         <h1>Type: </h1>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="rent_sale" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            className="w-5 h-5"
+            checked={formData?.type == "all" || check === "all"}
+            id="all"
+          />
           <label className="text-[17px]" htmlFor="rent_sale">
             Rent & Sale
           </label>
         </div>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="rent" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            checked={formData?.type == "rent" || check === "rent"}
+            className="w-5 h-5"
+            id="rent"
+          />
           <label className="text-[17px]" htmlFor="rent">
             Rent
           </label>
         </div>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="sale" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            checked={formData?.type == "sale" || check === "sale"}
+            className="w-5 h-5"
+            id="sale"
+          />
           <label className="text-[17px]" htmlFor="sale">
             Sale
           </label>
         </div>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="offer" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            checked={formData?.offer}
+            className="w-5 h-5"
+            id="offer"
+          />
           <label className="text-[17px]" htmlFor="offer">
             Offer
           </label>
@@ -49,13 +181,25 @@ function SidebarSearchTerm() {
       <div className="flex items-center flex-wrap gap-3 ">
         <h1>Amenities: </h1>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="parking" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            className="w-5 h-5"
+            id="parking"
+            checked={formData?.parking}
+          />
           <label className="text-[17px]" htmlFor="parking">
             Parking
           </label>
         </div>
         <div className="flex items-center gap-1">
-          <input type="checkbox" name="" className="w-5 h-5" id="furnished" />
+          <input
+            onChange={handleChange}
+            type="checkbox"
+            className="w-5 h-5"
+            id="furnished"
+            checked={formData?.furnished}
+          />
           <label className="text-[17px]" htmlFor="furnished">
             Furnished
           </label>
@@ -63,17 +207,22 @@ function SidebarSearchTerm() {
       </div>
       <div className="flex items-center gap-2">
         <h1>Sort: </h1>
-        <select name="" id="" className="p-3 rounded-md shadow-sm">
-          <option className="p-2" id="">
+        <select
+          id="sort"
+          onChange={handleSelectChange}
+          value={formData?.sort}
+          className="p-3 rounded-md shadow-sm"
+        >
+          <option className="p-2" value="regularPrice_desc">
             Price high to low
           </option>
-          <option className="p-2" id="">
+          <option className="p-2" value="regularPrice_asc">
             Price low to high
           </option>
-          <option className="p-2" id="">
+          <option className="p-2" value="createdAt_desc">
             Latest
           </option>
-          <option className="p-2" id="">
+          <option className="p-2" value="createdAt_asc">
             Oldest
           </option>
         </select>

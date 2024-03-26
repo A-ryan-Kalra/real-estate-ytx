@@ -8,11 +8,14 @@ function Header() {
   const { currentUser } = useSelector((state: any) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const urlParams = new URLSearchParams();
 
   // console.log(currentUser);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    navigate(`/search?searchTerm=${searchTerm}`);
   };
   return (
     <div className="bg-[#E2E9F1] shadow-md">
@@ -38,9 +41,7 @@ function Header() {
               placeholder="Search..."
               className=" bg-transparent  focus-visible:outline-none p-2 "
             />
-            <button
-              onClick={() => navigate(`/search?searchTerm=${searchTerm}`)}
-            >
+            <button type="submit">
               <HiSearch size={22} className="cursor-pointer" />
             </button>
           </div>

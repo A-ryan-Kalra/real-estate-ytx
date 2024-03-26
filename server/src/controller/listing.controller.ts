@@ -141,6 +141,8 @@ export const getSearchedItem = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  console.log("req.query");
+  console.log(req.query);
   const reqQuery = req.query as {
     limit?: string;
     startIndex?: string;
@@ -153,14 +155,18 @@ export const getSearchedItem = async (
     order?: string;
   };
 
-  const limit = parseInt(reqQuery.limit as string, 10) || 9;
-  const startIndex = parseInt(reqQuery.startIndex as string, 10) || 0;
+  const limit = parseInt(reqQuery.limit as string) || 9;
+  const startIndex = parseInt(reqQuery.startIndex as string) || 0;
   const searchTerm = reqQuery.searchTerm || "";
-  const sort = reqQuery.sort || "createdAt";
+  const sort = reqQuery.sort?.split("_")[0] || "createdAt";
   const order = reqQuery.order || "desc";
 
   let query: any = {
-    name: { $regex: searchTerm, $options: "i" },
+    $or: [
+      { name: { $regex: searchTerm, $options: "i" } },
+      { address: { $regex: searchTerm, $options: "i" } },
+      { description: { $regex: searchTerm, $options: "i" } },
+    ],
   };
 
   if (reqQuery.offer) {
@@ -175,7 +181,9 @@ export const getSearchedItem = async (
     query.parking = reqQuery.parking;
   }
 
-  if (reqQuery.type) {
+  if (reqQuery.type === undefined || reqQuery.type === "all") {
+    query.type = { $in: ["sale", "rent"] };
+  } else if (typeof reqQuery.type === "string") {
     query.type = reqQuery.type;
   }
 

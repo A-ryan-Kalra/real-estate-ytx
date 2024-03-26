@@ -37,3 +37,15 @@ export interface CommentProps {
   updatedAt?: string;
   createdAt?: string;
 }
+
+export interface SearchProps {
+  limit?: string;
+  startIndex?: string;
+  offer?: boolean;
+  furnished?: boolean;
+  parking?: boolean;
+  type?: string;
+  searchTerm?: string;
+  sort?: string;
+  order?: string;
+}
