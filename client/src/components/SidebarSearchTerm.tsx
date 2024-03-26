@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ListingDataProps, SearchProps } from "../constants/types";
+import { SearchProps } from "../constants/types";
 import { useLocation, useNavigate } from "react-router-dom";
-import useGetSearchedItem from "../hooks/useGetSearchedItem";
 
 function SidebarSearchTerm() {
   const [check, setChecked] = useState<string>("all");
@@ -14,22 +13,12 @@ function SidebarSearchTerm() {
     order: "desc",
     parking: false,
   });
+  const navigate = useNavigate();
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
-  const navigate = useNavigate();
-  const { data, error, isLoading, mutate } = useGetSearchedItem(
-    urlParams.toString()
-  );
-  const [post, setPost] = useState<ListingDataProps[]>([]);
 
   // console.log(location.search);
   // console.log(formData);
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      setPost(data);
-    }
-  }, [data]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,17 +41,19 @@ function SidebarSearchTerm() {
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
     const offerFromUrl = urlParams.get("offer");
+
     setFormData({
       searchTerm: searchTermFromUrl || formData.searchTerm,
       type: typeFromUrl || formData.type,
-      parking: Boolean(parkingFromUrl) || formData.parking,
-      furnished: Boolean(furnishedFromUrl) || formData.furnished,
+      parking: parkingFromUrl === "true" || formData.parking,
+      furnished: furnishedFromUrl === "true" || formData.furnished,
       sort: sortFromUrl || formData.sort,
       order: orderFromUrl || formData.order,
-      offer: Boolean(offerFromUrl) || formData.offer,
+      offer: offerFromUrl === "true" || formData.offer,
     });
-  }, []);
+  }, [urlParams.toString()]);
 
+  // console.log(formData);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (
       e.target.id === "all" ||
@@ -112,9 +103,9 @@ function SidebarSearchTerm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex py-4 px-4 flex-col gap-7 w-full border-r-2 h-full"
+      className="flex py-4 relative px-4 flex-col gap-2 md:gap-7 w-full "
     >
-      <div className="my-3 flex gap-2 items-center">
+      <div className="my-3 flex gap-2 items-center whitespace-nowrap">
         <label htmlFor="search">Search Term</label>
         <input
           type="search"
@@ -124,7 +115,7 @@ function SidebarSearchTerm() {
           id="searchTerm"
           placeholder="Search..."
           autoComplete="off"
-          className="border-2 resize-none focus-visible:outline-none p-2 rounded-md"
+          className="border-2 w-full resize-none focus-visible:outline-none p-2 rounded-md"
         />
       </div>
       <div className="flex gap-3 flex-wrap">
@@ -134,7 +125,7 @@ function SidebarSearchTerm() {
             onChange={handleChange}
             type="checkbox"
             className="w-5 h-5"
-            checked={formData?.type == "all" || check === "all"}
+            checked={formData?.type == "all"}
             id="all"
           />
           <label className="text-[17px]" htmlFor="rent_sale">
@@ -145,7 +136,7 @@ function SidebarSearchTerm() {
           <input
             onChange={handleChange}
             type="checkbox"
-            checked={formData?.type == "rent" || check === "rent"}
+            checked={formData?.type == "rent"}
             className="w-5 h-5"
             id="rent"
           />
@@ -157,7 +148,7 @@ function SidebarSearchTerm() {
           <input
             onChange={handleChange}
             type="checkbox"
-            checked={formData?.type == "sale" || check === "sale"}
+            checked={formData?.type == "sale"}
             className="w-5 h-5"
             id="sale"
           />

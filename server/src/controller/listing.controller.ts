@@ -161,6 +161,9 @@ export const getSearchedItem = async (
   const sort = reqQuery.sort?.split("_")[0] || "createdAt";
   const order = reqQuery.order || "desc";
 
+  // let query: any = {
+  //   name: { $regex: searchTerm, $options: "i" },
+  // };
   let query: any = {
     $or: [
       { name: { $regex: searchTerm, $options: "i" } },

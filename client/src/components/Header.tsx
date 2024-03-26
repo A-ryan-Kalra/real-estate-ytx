@@ -1,6 +1,6 @@
 import { HiSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoggedInUser from "./LoggedInUser";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,9 +8,16 @@ function Header() {
   const { currentUser } = useSelector((state: any) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const urlParams = new URLSearchParams();
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
 
   // console.log(currentUser);
+  useEffect(() => {
+    const searchQuery = urlParams.get("searchTerm");
+    if (searchQuery) {
+      setSearchTerm(searchQuery as string);
+    }
+  }, [urlParams.get("searchTerm")]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
