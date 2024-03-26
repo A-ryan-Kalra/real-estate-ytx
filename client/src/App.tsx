@@ -11,6 +11,7 @@ import EditListing from "./pages/EditListing";
 import Listing from "./pages/Listing";
 import ScrollUp from "./components/ScrollUp";
 import Search from "./pages/Search";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         </Route>
         <Route path="/listing/:id" element={<Listing />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>

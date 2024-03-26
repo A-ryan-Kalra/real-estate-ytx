@@ -15,7 +15,7 @@ function ListingTypes({
   const { data, error, isLoading, mutate } = useGetSearchedItem(type);
   const [listing, setListing] = useState<ListingDataProps[]>();
 
-  console.log(listing);
+  //   console.log(listing);
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -24,8 +24,8 @@ function ListingTypes({
   }, [data]);
 
   return (
-    <div className="flex  px-10 flex-col gap-2 my-10">
-      <h1 className="text-3xl text-slate-600 font-semibold">
+    <div className="flex max-md:items-center lg:px-10 px-1 flex-col gap-2 my-10">
+      <h1 className="lg:text-3xl text-2xl text-slate-600 font-semibold">
         Recent {description}
       </h1>
       <Link
