@@ -6,7 +6,7 @@ function SearchedData({
   post,
   isLoading,
 }: {
-  isLoading: boolean;
+  isLoading?: boolean;
   post: ListingDataProps;
 }) {
   // console.log(post);

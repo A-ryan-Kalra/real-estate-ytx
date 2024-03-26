@@ -216,12 +216,22 @@ function EditListing() {
   };
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileArray: File[] = Array.from(e.target.files as FileList);
+    console.log(fileArray.length);
+    if (fileArray.length > 6) {
+      setError("Can't upload more than 6 images at a time.");
+      setImgFileUrl([]);
+      setImgFileUrl1([]);
+      setImgFile1(false);
+
+      e.target.value = "";
+      return null;
+    }
     setError("");
     setSuccess("");
     setEditListing(true);
 
     setImgFile1(true);
-    const fileArray: File[] = Array.from(e.target.files as FileList);
     // 3999999;
 
     let hasError = false;

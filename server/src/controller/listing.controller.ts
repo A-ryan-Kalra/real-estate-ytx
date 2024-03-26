@@ -141,14 +141,14 @@ export const getSearchedItem = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  console.log("req.query");
-  console.log(req.query);
+  // console.log("req.query");
+  // console.log(req.query);
   const reqQuery = req.query as {
     limit?: string;
     startIndex?: string;
-    offer?: boolean;
-    furnished?: boolean;
-    parking?: boolean;
+    offer?: string;
+    furnished?: string;
+    parking?: string;
     type?: string;
     searchTerm?: string;
     sort?: string;
@@ -171,24 +171,32 @@ export const getSearchedItem = async (
       { description: { $regex: searchTerm, $options: "i" } },
     ],
   };
-
-  if (reqQuery.offer) {
+  if (reqQuery.offer === "true") {
     query.offer = reqQuery.offer;
+  } else {
+    query.offer = { $in: [false, true] };
   }
 
-  if (reqQuery.furnished) {
+  if (reqQuery.furnished === "true") {
     query.furnished = reqQuery.furnished;
+  } else {
+    query.furnished = { $in: [false, true] };
   }
 
-  if (reqQuery.parking) {
+  if (reqQuery.parking === "true") {
     query.parking = reqQuery.parking;
+  } else {
+    query.parking = { $in: [false, true] };
   }
+
+  // console.log(query, "query");
 
   if (reqQuery.type === undefined || reqQuery.type === "all") {
     query.type = { $in: ["sale", "rent"] };
   } else if (typeof reqQuery.type === "string") {
     query.type = reqQuery.type;
   }
+  // console.log(reqQuery);
 
   try {
     let sortObj: any = {};

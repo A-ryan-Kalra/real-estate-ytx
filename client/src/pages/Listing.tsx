@@ -30,7 +30,7 @@ function Listing() {
   const [userPost, setUserPost] = useState<any>();
   const [listing, setListing] = useState<ListingDataProps>(data);
   const [show, setSHow] = useState(false);
-  console.log(isLoading, "isLoad");
+  // console.log(isLoading, "isLoad");
   // console.log(isValidating, "isVal");
   // console.log(data, "data");
 
@@ -53,7 +53,8 @@ function Listing() {
       postUser();
     }
   }, [listing]);
-  console.log(listing);
+  // console.log(listing);
+
   useEffect(() => {
     setListing(data);
   }, [data]);

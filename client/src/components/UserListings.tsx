@@ -117,13 +117,11 @@ function Listings() {
             </div>
           ))
         ) : listing && listing.length === 0 ? (
-          <div className="  w-full items-center flex justify-center my-2">
-            <ClipLoader
-              size={50}
-              color="#36d7b7"
-              speedMultiplier={2}
-              className="max-lg:translate-y-[-25%]  mx-auto relative max-lg:bottom-[25%] "
-            />
+          <div className="  w-full items-center flex justify-center gap-4 my-2">
+            <ClipLoader size={50} color="#36d7b7" speedMultiplier={2} />
+            <h1 className="md:text-xl text-lg text-teal-600">
+              You don't have any listing yet!
+            </h1>
           </div>
         ) : (
           <div className="my-4">No listings yet</div>

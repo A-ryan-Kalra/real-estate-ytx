@@ -178,12 +178,18 @@ function CreateListing() {
   // console.log(formData);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileArray: File[] = Array.from(e.target.files as FileList);
+    // 3999999;
+    // console.log(fileArray.length);
+    if (fileArray.length > 6) {
+      setError("Can't upload more than 6 images at a time.");
+      e.target.value = "";
+      return null;
+    }
     setError("");
     setSuccess("");
     setLoading(true);
     setImgFile1(true);
-    const fileArray: File[] = Array.from(e.target.files as FileList);
-    // 3999999;
     setTimeout(() => {
       let hasError = false;
       for (const i of fileArray) {
