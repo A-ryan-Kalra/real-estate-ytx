@@ -41,7 +41,7 @@ function DashComments() {
     }
   };
 
-  console.log(comments);
+  //   console.log(comments);
   return (
     <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
       {currentUser?.isAdmin && comments?.length > 0 ? (
