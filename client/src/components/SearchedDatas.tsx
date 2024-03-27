@@ -2,13 +2,7 @@ import { Link } from "react-router-dom";
 import { ListingDataProps } from "../constants/types";
 import { HiLocationMarker } from "react-icons/hi";
 
-function SearchedData({
-  post,
-  isLoading,
-}: {
-  isLoading?: boolean;
-  post: ListingDataProps;
-}) {
+function SearchedData({ post }: { post: ListingDataProps }) {
   // console.log(post);
   return (
     <div className="flex flex-col max-md:mx-auto gap-1 border-2 shadow-md  hover:shadow-slate-400 duration-300 rounded-lg overflow-hidden">

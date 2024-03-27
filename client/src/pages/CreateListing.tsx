@@ -33,9 +33,7 @@ function CreateListing() {
     parking: false,
     type: "rent",
   } as ListingDataProps);
-  const [imgUploadingProgress, setImageFileUploadingProgress] = useState<
-    string[] | null
-  >(["0"]);
+  const [_, setImageFileUploadingProgress] = useState<string[] | null>(["0"]);
   const [imgFileUrl, setImgFileUrl] = useState<string[]>([]);
   const [imgFileUrl1, setImgFileUrl1] = useState<File[]>([]);
   const navigate = useNavigate();
@@ -151,7 +149,7 @@ function CreateListing() {
             return newProgress;
           });
         },
-        (error) => {
+        () => {
           setError("Could not upload (File must be less than 4MB)");
           setImageFileUploadingProgress(null);
           setImgFileUrl1([]);
@@ -191,7 +189,7 @@ function CreateListing() {
     setLoading(true);
     setImgFile1(true);
     setTimeout(() => {
-      let hasError = false;
+      // let hasError = false;
       for (const i of fileArray) {
         if (i.size > 3999999) {
           setError(i.name.slice(0, 20) + "Image should be less than 4mb");
@@ -200,7 +198,7 @@ function CreateListing() {
           setLoading(false);
           e.target.value = "";
 
-          hasError = true;
+          // hasError = true;
           return null;
         } else {
           setImgFileUrl((prev) => [...prev, URL.createObjectURL(i)]);

@@ -33,18 +33,13 @@ function EditListing() {
     type: "rent",
   } as ListingDataProps);
 
-  const [imgUploadingProgress, setImageFileUploadingProgress] = useState<
-    string[] | null
-  >(["0"]);
-  const [imgFileUrl, setImgFileUrl] = useState<string[]>([]);
+  const [_, setImageFileUploadingProgress] = useState<string[] | null>(["0"]);
   const [imgFileUrl1, setImgFileUrl1] = useState<File[]>([]);
   const navigate = useNavigate();
   const [success, setSuccess] = useState("");
   const [imgLink, setImgLink] = useState<string[]>([]);
   const urlParams = useParams();
-  const [editListing, setEditListing] = useState<boolean>(false);
   const [checked, setChecked] = useState("");
-  const [switchSides, setSwitchSides] = useState(false);
   // console.log(formData);
   useEffect(() => {
     const getList = async () => {
@@ -60,7 +55,6 @@ function EditListing() {
           // setImgFileUrl(filtered?.imageUrls);
           setImgLink(filtered.imageUrls);
 
-          // setEditListing(filtered);
           setFormData(filtered);
         } else {
           setError(data.message);
@@ -189,19 +183,16 @@ function EditListing() {
             return newProgress;
           });
         },
-        (error) => {
+        () => {
           setError("Could not upload (File must be less than 4MB)");
           setImageFileUploadingProgress(null);
           setImgFileUrl1([]);
-          setImgFileUrl([]);
           setLoading(false);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-            setImgFileUrl([]);
             setImgFileUrl1([]);
             setImgLink((prev) => [...prev, downloadUrl]);
-            setEditListing(false);
             setLoading(false);
             setImgFile1(false);
             setImgFile(false);
@@ -220,7 +211,6 @@ function EditListing() {
     console.log(fileArray.length);
     if (fileArray.length > 6) {
       setError("Can't upload more than 6 images at a time.");
-      setImgFileUrl([]);
       setImgFileUrl1([]);
       setImgFile1(false);
 
@@ -229,23 +219,20 @@ function EditListing() {
     }
     setError("");
     setSuccess("");
-    setEditListing(true);
 
     setImgFile1(true);
     // 3999999;
 
-    let hasError = false;
+    // let hasError = false;
     for (const i of fileArray) {
       if (i.size > 3999999) {
         setError(i.name.slice(0, 20) + "Image should be less than 4mb");
-        setImgFileUrl([]);
         setImgFileUrl1([]);
         e.target.value = "";
 
-        hasError = true;
+        // hasError = true;
         return null;
       } else {
-        setImgFileUrl((prev) => [...prev, URL.createObjectURL(i)]);
         setImgFileUrl1((prev) => [...prev, i]);
       }
     }
@@ -255,7 +242,7 @@ function EditListing() {
     //   console.log("outside");
     // }
   };
-  const handleImgUrlDelete = (image: string, index: number) => {
+  const handleImgUrlDelete = (image: string) => {
     // const filteredUrls = imgFileUrl.filter((img) => img !== image);
     // setImgFile1(true);
     setImgLink((prev) => prev.filter((img) => img !== image));
@@ -509,7 +496,7 @@ function EditListing() {
                     />
                     <button
                       type="button"
-                      onClick={() => handleImgUrlDelete(img, index)}
+                      onClick={() => handleImgUrlDelete(img)}
                       className="border-2  p-3 rounded-md hover:bg-red-200 duration-300 hover:border-red-300 hover:text-red-500"
                     >
                       Delete

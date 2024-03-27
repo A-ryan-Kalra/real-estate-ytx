@@ -79,7 +79,7 @@ function DashProfile() {
         setImageFileUploadingProgress(progress.toFixed(0));
         setNum(100);
       },
-      (error) => {
+      () => {
         setImageUploadError("Could not upload (File must be less than 4MB)");
         setNum(0);
         setImageFileUploadingProgress(null);
@@ -151,6 +151,7 @@ function DashProfile() {
     try {
       const res = await fetch("/api/auth/signout");
       const data = await res.json();
+      console.log(data);
       dispatch(signOut());
     } catch (error) {
       console.error(error);
@@ -163,7 +164,7 @@ function DashProfile() {
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       });
-      const data = await res.json();
+      // const data = await res.json();
       if (res.ok) {
         dispatch(signOut());
         setImageUpdateSuccess("User deleted successfully");

@@ -31,7 +31,7 @@ function Search() {
         <div className="flex flex-wrap gap-8 w-full  max-w-[1200px] ">
           {post?.length > 0 ? (
             post?.map((pos: ListingDataProps, index: number) => (
-              <SearchedData post={pos} isLoading={isLoading} key={index} />
+              <SearchedData post={pos} key={index} />
             ))
           ) : post?.length === 0 && !isLoading ? (
             <div className=" w-full flex flex-col gap-2 justify-center tex items-center">
