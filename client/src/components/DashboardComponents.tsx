@@ -16,7 +16,7 @@ function DashboardComponents() {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const res = await fetch(`/api/comment/getComments`);
+        const res = await fetch(`/api/comment/getComments?limit=5`);
         const data = await res.json();
         if (res.ok) {
           // console.log(data);
@@ -31,7 +31,7 @@ function DashboardComponents() {
     };
     const getListings = async () => {
       try {
-        const res = await fetch(`/api/listing/getlistings`);
+        const res = await fetch(`/api/listing/getlistings?limit=5`);
         const data = await res.json();
         if (res.ok) {
           // console.log(data);
@@ -46,7 +46,7 @@ function DashboardComponents() {
     };
     const getUsers = async () => {
       try {
-        const res = await fetch(`/api/user/getUsers`);
+        const res = await fetch(`/api/user/getUsers?limit=5`);
         const data = await res.json();
         if (res.ok) {
           // console.log(data);
@@ -63,7 +63,9 @@ function DashboardComponents() {
     getListings();
     getComments();
   }, []);
-
+  // console.log(user);
+  // console.log(listing);
+  // console.log(comments);
   return (
     <div className="min-h-screen w-full">
       <div className="flex flex-wrap p-3 gap-3 items-center justify-center">
@@ -118,7 +120,7 @@ function DashboardComponents() {
           </table>
         </div>
 
-        <div className="flex  shadow-md max-md:w-full max-w-[500px]  flex-col border-2 border-slate-100 px-2 py-1  overflow-auto">
+        <div className="flex  shadow-md max-md:w-full md:max-w-[500px]  flex-col border-2 border-slate-100 px-2 py-1  overflow-auto">
           <div className="flex flex-row gap-3 justify-around items-center font-semibold">
             <h1>Recent Listings</h1>
             <Link
@@ -169,7 +171,7 @@ function DashboardComponents() {
           </table>
         </div>
 
-        <div className="flex   shadow-md  max-md:w-full max-w-[400px] flex-col border-2 border-slate-100 px-2 py-1  overflow-auto">
+        <div className="flex   shadow-md  max-md:w-full md:max-w-[400px] flex-col border-2 border-slate-100 px-2 py-1  overflow-auto">
           <div className="flex flex-row gap-3 justify-around items-center font-semibold">
             <h1>Recent Comments</h1>
             <Link
