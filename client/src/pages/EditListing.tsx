@@ -228,7 +228,7 @@ function EditListing() {
       if (i.size > 3999999) {
         setError(i.name.slice(0, 20) + "Image should be less than 4mb");
         setImgFileUrl1([]);
-        e.target.value = "";
+        // e.target.value = "";
 
         // hasError = true;
         return null;
@@ -236,7 +236,7 @@ function EditListing() {
         setImgFileUrl1((prev) => [...prev, i]);
       }
     }
-    e.target.value = "";
+    // e.target.value = "";
     // if (!hasError) {
     //   setImgFile(fileArray);
     //   console.log("outside");
