@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CommentProps } from "../constants/types";
+import { signOut } from "../redux/user/userSlice";
 
 function DashComments() {
   const { currentUser } = useSelector((state: any) => state.user);
   const [comments, setListings] = useState<CommentProps[]>([]);
   const [load, setLoad] = useState(false);
+  const dispatch = useDispatch();
+  const [sessionEnded, setSessionEnded] = useState<any>();
 
   useEffect(() => {
     const getListings = async () => {
@@ -15,6 +18,7 @@ function DashComments() {
         if (res.ok) {
           setListings(data as CommentProps[]);
         } else {
+          setSessionEnded(data);
           console.error(data);
         }
       } catch (error) {
@@ -40,6 +44,22 @@ function DashComments() {
       console.error(error);
     }
   };
+  const handleSession = () => {
+    dispatch(signOut());
+  };
+
+  if (sessionEnded?.message === "Unauthorized") {
+    return (
+      <div className="w-full relative justify-center px-3 pt-10 flex">
+        <div
+          className="text-xl relative top-[20%] text-center h-fit border-2 p-3 w-fit rounded-md hover:shadow-md hover:shadow-slate-300 duration-300 ease-in-out cursor-pointer"
+          onClick={handleSession}
+        >
+          Session has been expired, try signing in again
+        </div>
+      </div>
+    );
+  }
 
   //   console.log(comments);
   return (
@@ -48,12 +68,18 @@ function DashComments() {
         <table className="shadow-md table-auto my-3  w-full max-w-[1320px] text-left mx-auto">
           <thead className="w-full">
             <tr className="w-full text-[14px] ">
-              <th className="w-1/12 border-2 p-2">Date Updated</th>
-              <th className="w-2/12 border-2 p-2">Comment Content</th>
-              <th className="w-1/12 border-2 p-2">Number of Likes</th>
-              <th className="w-2/12 border-2 p-2">PostId</th>
-              <th className="w-1/12 border-2 p-2">UserId</th>
-              <th className="w-1/12 border-2 p-2 ">Delete</th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap">
+                Date Updated
+              </th>
+              <th className="w-2/12 border-2 p-2 whitespace-nowrap">
+                Comment Content
+              </th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap">
+                Number of Likes
+              </th>
+              <th className="w-2/12 border-2 p-2 whitespace-nowrap">PostId</th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap">UserId</th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap ">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -62,8 +88,12 @@ function DashComments() {
                 <td className=" border-2 p-2">
                   {new Date(comment?.updatedAt as string).toLocaleDateString()}
                 </td>
-                <td className=" border-2 p-2">{comment?.content}</td>
-                <td className=" border-2 p-2">{comment?.likes?.length}</td>
+                <td className="max-w-[200px] break-all border-2 p-2">
+                  {comment?.content}
+                </td>
+                <td className=" border-2 p-2 text-center text-[17px]">
+                  {comment?.likes?.length}
+                </td>
                 <td className=" border-2 p-2">{comment?.postId}</td>
                 <td className=" border-2 p-2 items-center ">
                   {comment?.userId}
@@ -79,7 +109,7 @@ function DashComments() {
           </tbody>
         </table>
       ) : (
-        <div>You have no users.yet</div>
+        <div>You have no comments yet!</div>
       )}
     </div>
   );

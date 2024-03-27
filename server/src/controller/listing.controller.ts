@@ -62,7 +62,7 @@ export const deleteListing = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  if (req.user.id !== req.body.id) {
+  if (!req.user.isAdmin && req.user.id !== req.body.id) {
     return next(errorHandler(403, "You are not allowed to delete the listing"));
   }
   try {
@@ -75,6 +75,30 @@ export const deleteListing = async (
     res.status(200).json("Listing deleted successfully");
   } catch (error) {
     next(error);
+  }
+};
+
+export const deleteUserListing = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    if (!req.user.isAdmin) {
+      return next(
+        errorHandler(403, "You are not allowed to delete User's listing")
+      );
+    }
+    const deleteUserListings = await listing.deleteMany({
+      userRef: req.params.userId,
+    });
+    if (deleteUserListings.deletedCount === 0) {
+      return next(errorHandler(404, "Comments does not exist"));
+    }
+
+    return res.status(200).json("User's listing deleted");
+  } catch (error) {
+    console.error(error);
   }
 };
 

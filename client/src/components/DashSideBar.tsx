@@ -34,7 +34,7 @@ function DashSideBar({ tab }: { tab: string }) {
               className={`${tab !== "dashboard" && "text-slate-500"}`}
               size={25}
             />
-            <h1 className="text-lg">Profile</h1>
+            <h1 className="text-lg">Dashboard</h1>
           </Link>
 
           <Link
@@ -54,13 +54,13 @@ function DashSideBar({ tab }: { tab: string }) {
           </Link>
 
           <Link
-            to="/dashboard?tab=posts"
+            to="/dashboard?tab=listings"
             className={`relative ${
-              tab === "posts" && "bg-slate-200 rounded-md"
+              tab === "listings" && "bg-slate-200 rounded-md"
             } items-center gap-2 flex p-1`}
           >
             <HiDocumentText
-              className={`${tab !== "posts" && "text-slate-500"}`}
+              className={`${tab !== "listings" && "text-slate-500"}`}
               size={25}
             />
             <h1 className="text-lg">Listings</h1>

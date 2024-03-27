@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FormDataProps } from "../constants/types";
-import { MdOutlineDone } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
+import { ListingDataProps } from "../constants/types";
+import { Link } from "react-router-dom";
 import { signOut } from "../redux/user/userSlice";
-function DashUsers() {
+
+function DashListings() {
   const { currentUser } = useSelector((state: any) => state.user);
-  const [user, setUser] = useState<FormDataProps[]>([]);
-  const [load, setLoad] = useState(false);
+  const [user, setUser] = useState<ListingDataProps[]>([]);
   const dispatch = useDispatch();
+  const [load, setLoad] = useState(false);
+
   const [sessionEnded, setSessionEnded] = useState<any>();
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await fetch(`/api/user/getUsers`);
+        const res = await fetch(`/api/listing/getlistings`);
         const data = await res.json();
         if (res.ok) {
-          setUser(data as FormDataProps[]);
+          setUser(data);
         } else {
           console.error(data);
           setSessionEnded(data);
@@ -28,50 +29,29 @@ function DashUsers() {
     };
     getUsers();
   }, [load]);
+  //   console.log(user);
+
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/user/delete/${id}`, {
+      const res = await fetch(`/api/listing/delete/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (res.ok) {
-        console.log(data);
+        // console.log(data);
         setLoad(!load);
-        const deleteListing = await fetch(
-          `/api/listing/deleteUserListings/${id}`,
-          {
-            method: "DELETE",
-          }
-        );
-        const data1 = await deleteListing.json();
-        if (deleteListing.ok) {
-          console.log(data1);
-          const deleteListingComments = await fetch(
-            `/api/comment/deleteAll/${id}`,
-            {
-              method: "DELETE",
-            }
-          );
-          const data2 = await deleteListingComments.json();
-          if (res.ok) {
-            console.log(data2);
-          } else {
-            console.error(data2);
-          }
-        } else {
-          console.error(data1);
-        }
       } else {
         console.error(data);
       }
     } catch (error) {
       console.error(error);
-      setLoad(false);
     }
   };
+
   const handleSession = () => {
     dispatch(signOut());
   };
+
   if (sessionEnded?.message === "Unauthorized") {
     return (
       <div className="w-full relative justify-center px-3 pt-10 flex">
@@ -84,7 +64,7 @@ function DashUsers() {
       </div>
     );
   }
-  //   console.log(user);
+
   return (
     <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
       {currentUser?.isAdmin && user?.length > 0 ? (
@@ -95,43 +75,73 @@ function DashUsers() {
                 Date Created
               </th>
               <th className="w-1/12 border-2 p-2 whitespace-nowrap">
-                User Image
+                Listing Image
               </th>
               <th className="w-2/12 border-2 p-2 whitespace-nowrap">
-                Username
+                Listing Title
               </th>
-              <th className="w-2/12 border-2 p-2 whitespace-nowrap">Email</th>
-              <th className="w-1/12 border-2 p-2 whitespace-nowrap">Admin</th>
-              <th className="w-1/12 border-2 p-2 whitespace-nowrap ">Delete</th>
+              <th className="w-2/12 border-2 p-2 whitespace-nowrap">
+                Regular Price
+              </th>
+              <th className="w-2/12 border-2 p-2 whitespace-nowrap">
+                Discount Price
+              </th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap">Delete</th>
+              <th className="w-1/12 border-2 p-2 whitespace-nowrap ">Edit</th>
             </tr>
           </thead>
           <tbody>
-            {user?.map((usr: FormDataProps, index: number) => (
+            {user?.map((usr: ListingDataProps, index: number) => (
               <tr key={index}>
                 <td className=" border-2 p-2">
                   {new Date(usr?.createdAt as string).toLocaleDateString()}
                 </td>
                 <td className=" border-2 p-2">
                   <img
-                    src={usr!.profilePicture}
-                    className="rounded-full object-cover max-w-14 max-h-14"
+                    src={usr?.imageUrls[0]}
+                    className="mx-auto object-cover max-w-[100px] max-h-20"
                     alt="profile "
                   />
                 </td>
-                <td className=" border-2 p-2">{usr?.username}</td>
-                <td className=" border-2 p-2">{usr?.email}</td>
-                <td className=" border-2 p-2 items-center ">
-                  {usr?.isAdmin ? (
-                    <MdOutlineDone size={18} color="#308a69" />
-                  ) : (
-                    <RxCross2 size={18} color="#ac3e3e" />
-                  )}
+                <td className=" border-2 p-2 break-words">
+                  <Link
+                    to={`/listing/${usr?._id}`}
+                    className="hover:underline break-words"
+                  >
+                    {usr?.name}
+                  </Link>
                 </td>
+                <td className="items-center border-2 p-2">
+                  ₹{""}
+                  {usr?.regularPrice.toLocaleString("en-IN", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+
+                <td className="items-center border-2 p-2">
+                  {usr?.discountPrice !== 0
+                    ? `₹` +
+                      usr?.discountPrice?.toLocaleString("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })
+                    : "No Discount allowed"}
+                </td>
+
                 <td
                   onClick={() => handleDelete(usr?._id as string)}
                   className=" border-2 p-2 text-red-600 hover:underline cursor-pointer"
                 >
                   Delete
+                </td>
+                <td className=" border-2 p-2 items-center ">
+                  <Link
+                    to={`/edit-listing/${usr?._id}`}
+                    className="hover:underline"
+                  >
+                    Edit
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -144,4 +154,4 @@ function DashUsers() {
   );
 }
 
-export default DashUsers;
+export default DashListings;

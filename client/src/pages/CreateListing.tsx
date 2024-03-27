@@ -86,8 +86,8 @@ function CreateListing() {
         body: JSON.stringify({ formData }),
       });
       const data = await res.json();
-      console.log(data);
-      console.log("data");
+      // console.log(data);
+      // console.log("data");
       setLoading(false);
       if (res.ok) {
         setSuccess("Information saved successfully");

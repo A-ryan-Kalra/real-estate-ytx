@@ -98,7 +98,7 @@ function CommentsSection({
                 {moment(comment?.createdAt).fromNow()}
               </span>
             </h1>
-            <h1 className="text-gray-600">{comment?.content}</h1>
+            <h1 className="text-gray-600 break-all">{comment?.content}</h1>
             <div className="flex gap-3 items-center">
               <span className="flex whitespace-nowrap text-[16px] items-center gap-1">
                 <span

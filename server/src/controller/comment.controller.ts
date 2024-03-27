@@ -97,6 +97,30 @@ export const deleteComment = async (
   }
 };
 
+export const deleteAllComments = async (
+  req: UserProps,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    if (!req.user.isAdmin) {
+      return next(
+        errorHandler(403, "You are not allowed to delete User's listing")
+      );
+    }
+    const allComments = await Comment.deleteMany({
+      userId: req.params.userId,
+    });
+    if (allComments.deletedCount === 0) {
+      return next(errorHandler(404, "Comments does not exist"));
+    }
+
+    return res.status(200).json("All Comments deleted");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const likeComment = async (
   req: UserProps,
   res: express.Response,
