@@ -17,7 +17,8 @@ function DashUsers() {
         const res = await fetch(`/api/user/getUsers`);
         const data = await res.json();
         if (res.ok) {
-          setUser(data as FormDataProps[]);
+          // console.log(data?.users);
+          setUser(data?.users as FormDataProps[]);
         } else {
           console.error(data);
           setSessionEnded(data);

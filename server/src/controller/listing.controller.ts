@@ -46,12 +46,38 @@ export const getListings = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  const startIndex = parseInt(req.query.startIndex as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 9;
+  const sortDirection = req.query.sort === "asc" ? 1 : -1;
   try {
     if (!req.user.isAdmin) {
       next(errorHandler(403, "You are not allowed to see all the listings"));
     }
-    const allListings = await listing.find().sort({ createdAt: "desc" });
-    return res.status(200).json(allListings);
+    const allListings = await listing
+      .find()
+      .sort({
+        createdAt: sortDirection,
+      })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalListings = await listing.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthlisting = await listing.countDocuments({
+      createdAt: {
+        $gte: oneMonthAgo,
+      },
+    });
+    return res.status(200).json({
+      listings: allListings,
+      totalUsers: totalListings,
+      lastMonthUser: lastMonthlisting,
+    });
   } catch (error) {
     next(error);
   }

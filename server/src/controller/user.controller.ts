@@ -49,16 +49,37 @@ export const getUsers = async (
     next(errorHandler(405, "You are not allowed to see all users"));
   }
   try {
-    const getAllUser: any = await User.find().sort({ createdAt: "desc" });
-    let arr: any = [];
-    getAllUser.map((user: any) => {
+    const startIndex = parseInt(req.query.startIndex as string) || 0;
+    const limit = parseInt(req.query.limit as string) || 9;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
+
+    const getAllUser: any = await User.find()
+      .sort({
+        createdAt: sortDirection,
+      })
+      .skip(startIndex)
+      .limit(limit);
+
+    const userWithoutPassword = getAllUser.map((user: any) => {
       const { password, ...rest } = user._doc;
-      arr.push(rest);
-      // console.log(rest);
+      return rest;
     });
-    // console.log(arr);
-    // console.log("rest");
-    return res.status(200).json(arr);
+    const totalUsers = await User.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthUser = await User.countDocuments({
+      createdAt: {
+        $gte: oneMonthAgo,
+      },
+    });
+
+    return res
+      .status(200)
+      .json({ users: userWithoutPassword, totalUsers, lastMonthUser });
   } catch (error) {
     next(error);
   }

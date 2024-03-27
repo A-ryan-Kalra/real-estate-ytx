@@ -148,12 +148,40 @@ export const getAllComments = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  const startIndex = parseInt(req.query.startIndex as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 9;
+  const sortDirection = req.query.sort === "asc" ? 1 : -1;
   try {
     if (!req.user.isAdmin) {
       next(errorHandler(403, "You are not allowed to see all the listings"));
     }
-    const allComments = await Comment.find().sort({ createdAt: "desc" });
-    return res.status(200).json(allComments);
+    const allComments = await Comment.find()
+      .sort({
+        createdAt: sortDirection,
+      })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalComments = await Comment.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthComment = await Comment.countDocuments({
+      createdAt: {
+        $gte: oneMonthAgo,
+      },
+    });
+
+    return res
+      .status(200)
+      .json({
+        allComments,
+        totalUsers: totalComments,
+        lastMonthUser: lastMonthComment,
+      });
   } catch (error) {
     next(error);
   }

@@ -16,7 +16,8 @@ function DashComments() {
         const res = await fetch(`/api/comment/getComments`);
         const data = await res.json();
         if (res.ok) {
-          setListings(data as CommentProps[]);
+          // console.log(data);
+          setListings(data?.allComments as CommentProps[]);
         } else {
           setSessionEnded(data);
           console.error(data);

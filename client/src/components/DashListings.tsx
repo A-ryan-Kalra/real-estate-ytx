@@ -18,7 +18,8 @@ function DashListings() {
         const res = await fetch(`/api/listing/getlistings`);
         const data = await res.json();
         if (res.ok) {
-          setUser(data);
+          // console.log(data);
+          setUser(data?.listings);
         } else {
           console.error(data);
           setSessionEnded(data);

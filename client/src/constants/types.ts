@@ -7,6 +7,7 @@ export interface FormDataProps {
   createdAt?: string;
   isAdmin?: string;
   _id?: string;
+  [key: string]: any;
 }
 
 export interface ListingDataProps {
@@ -27,6 +28,7 @@ export interface ListingDataProps {
   _id?: string;
   createdAt?: string;
   updatedAt?: string;
+  [key: string]: any;
 }
 
 export interface CommentProps {
@@ -37,6 +39,7 @@ export interface CommentProps {
   userId: string;
   updatedAt?: string;
   createdAt?: string;
+  [key: string]: any;
 }
 
 export interface SearchProps {
