@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CommentProps, FormDataProps } from "../constants/types";
 import useGetUser from "../hooks/useGetUser";
 import moment from "moment";
-import { FaEdit, FaRegEdit } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { HiThumbUp, HiTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
 
@@ -13,7 +13,7 @@ function CommentsSection({
   comment: CommentProps;
   mutate: () => void;
 }) {
-  const { data, error, isLoading, mutate } = useGetUser(comment?.userId);
+  const { data } = useGetUser(comment?.userId);
   const { currentUser } = useSelector((state: any) => state.user);
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState("");

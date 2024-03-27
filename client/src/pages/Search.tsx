@@ -9,9 +9,7 @@ import { ClipLoader, HashLoader } from "react-spinners";
 function Search() {
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
-  const { data, error, isLoading, mutate } = useGetSearchedItem(
-    urlParams.toString()
-  );
+  const { data, isLoading } = useGetSearchedItem(urlParams.toString());
   const [post, setPost] = useState<ListingDataProps[]>([]);
 
   useEffect(() => {

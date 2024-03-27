@@ -19,7 +19,7 @@ import img5 from "../assets/img5.jpg";
 import ListingTypes from "../components/ListingTypes";
 
 function Home() {
-  const [imageUrls, setImgUrls] = useState([img1, img2, img3, img4, img5]);
+  const [imageUrls, _] = useState([img1, img2, img3, img4, img5]);
 
   return (
     <div className="min-h-screen flex flex-col gap-6 w-full  ">

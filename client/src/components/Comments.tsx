@@ -11,7 +11,7 @@ function Comments({
   postId: string;
 }) {
   // console.log(postId);
-  const { data, error, isLoading, mutate } = useGetListingComments(postId);
+  const { data, mutate } = useGetListingComments(postId);
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [formData, setFormData] = useState<CommentProps>({
     content: "",

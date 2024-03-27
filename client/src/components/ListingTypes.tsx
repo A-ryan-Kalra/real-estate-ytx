@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useGetSearchedItem from "../hooks/useGetSearchedItem";
 import { useEffect, useState } from "react";
-import { ListingDataProps, SearchProps } from "../constants/types";
+import { ListingDataProps } from "../constants/types";
 import SearchedData from "./SearchedDatas";
 import { ClipLoader } from "react-spinners";
 
@@ -12,7 +12,7 @@ function ListingTypes({
   description: string;
   type: string;
 }) {
-  const { data, error, isLoading, mutate } = useGetSearchedItem(type);
+  const { data, isLoading } = useGetSearchedItem(type);
   const [listing, setListing] = useState<ListingDataProps[]>();
 
   //   console.log(listing);

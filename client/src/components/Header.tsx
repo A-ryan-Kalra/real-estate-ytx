@@ -2,7 +2,7 @@ import { HiSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoggedInUser from "./LoggedInUser";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 function Header() {
   const { currentUser } = useSelector((state: any) => state.user);

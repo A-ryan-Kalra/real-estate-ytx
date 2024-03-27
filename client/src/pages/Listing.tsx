@@ -17,15 +17,13 @@ import "swiper/css/pagination";
 import { HiLocationMarker, HiOutlinePaperClip } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import Comments from "../components/Comments";
-import { BarLoader, HashLoader, ScaleLoader } from "react-spinners";
+import { HashLoader, ScaleLoader } from "react-spinners";
 
 function Listing() {
   const { currentUser } = useSelector((state: any) => state.user);
   const [contact, setContact] = useState(false);
   const urlParams = useParams();
-  const { data, error, isLoading, mutate, isValidating } = useGetListing(
-    urlParams.id as string
-  );
+  const { data, isLoading } = useGetListing(urlParams.id as string);
   const [message, setMessage] = useState("");
   const [userPost, setUserPost] = useState<any>();
   const [listing, setListing] = useState<ListingDataProps>(data);

@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  CommentProps,
-  FormDataProps,
-  ListingDataProps,
-} from "../constants/types";
+import { CommentProps, FormDataProps } from "../constants/types";
 import CardInfo from "./CardInfo";
 import { Link } from "react-router-dom";
 
@@ -11,7 +7,7 @@ function DashboardComponents() {
   const [user, setUser] = useState<any>([]);
   const [listing, setListing] = useState<any>([]);
   const [comments, setComments] = useState<any>([]);
-  const [sessionEnded, setSessionEnded] = useState<any>();
+  // const [sessionEnded, setSessionEnded] = useState<any>();
 
   useEffect(() => {
     const getComments = async () => {
@@ -22,7 +18,7 @@ function DashboardComponents() {
           // console.log(data);
           setComments(data as CommentProps[]);
         } else {
-          setSessionEnded(data);
+          // setSessionEnded(data);
           console.error(data);
         }
       } catch (error) {
@@ -38,7 +34,7 @@ function DashboardComponents() {
           setListing(data);
         } else {
           console.error(data);
-          setSessionEnded(data);
+          // setSessionEnded(data);
         }
       } catch (error) {
         console.error(error);
@@ -53,7 +49,7 @@ function DashboardComponents() {
           setUser(data as FormDataProps[]);
         } else {
           console.error(data);
-          setSessionEnded(data);
+          // setSessionEnded(data);
         }
       } catch (error) {
         console.error(error);
