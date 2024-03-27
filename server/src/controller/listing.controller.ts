@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import express from "express";
 import { UserProps } from "../utils/verifyUser";
 import errorHandler from "../utils/errorHandler";

@@ -1,7 +1,6 @@
 import bcryptjs from "bcryptjs";
 import express from "express";
 import User from "../models/user.model";
-import { deleteModel } from "mongoose";
 import errorHandler from "../utils/errorHandler";
 import { UserProps } from "../utils/verifyUser";
 

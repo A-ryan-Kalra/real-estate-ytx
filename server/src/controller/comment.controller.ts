@@ -2,7 +2,6 @@ import express from "express";
 import { UserProps } from "../utils/verifyUser";
 import errorHandler from "../utils/errorHandler";
 import Comment from "../models/comment.model";
-import { nextTick } from "process";
 
 export const createComment = async (
   req: UserProps,
@@ -175,13 +174,11 @@ export const getAllComments = async (
       },
     });
 
-    return res
-      .status(200)
-      .json({
-        allComments,
-        totalUsers: totalComments,
-        lastMonthUser: lastMonthComment,
-      });
+    return res.status(200).json({
+      allComments,
+      totalUsers: totalComments,
+      lastMonthUser: lastMonthComment,
+    });
   } catch (error) {
     next(error);
   }
