@@ -15,8 +15,8 @@ function DashSideBar({ tab }: { tab: string }) {
   const dispatch = useDispatch();
 
   const handleSignOut = async () => {
-    const res = await fetch("/api/auth/signout");
-    const data = await res.json();
+    await fetch("/api/auth/signout");
+    // const data = await res.json();
     dispatch(signOut());
   };
   //   console.log(currentUser);
