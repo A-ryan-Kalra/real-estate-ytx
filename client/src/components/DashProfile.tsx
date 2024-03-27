@@ -35,6 +35,7 @@ function DashProfile() {
   const [imageUpdateSuccess, setImageUpdateSuccess] = useState("");
   const [switchEye, setSwitchEye] = useState(false);
   const [switchSides, setSwitchSides] = useState(false);
+  const [uploadImg, setUploadImg] = useState(false);
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (loading) {
@@ -93,6 +94,7 @@ function DashProfile() {
             ...prev,
             profilePicture: downloadUrl,
           }));
+          setUploadImg(true);
           setLoading(false);
         });
       }
@@ -287,8 +289,13 @@ function DashProfile() {
               />
             )}
           </div>
-          <button className="border-2 p-2 rounded-md border-[#21cdbe] hover:shadow-md duration-300 ease-in-out active:scale-95 hover:shadow-[#21cdbe]">
-            Update
+          <button
+            className={`${
+              uploadImg &&
+              "bg-teal-500 text-white duration-300 ease-out hover:bg-opacity-90"
+            } border-2 p-2 rounded-md border-[#21cdbe] hover:shadow-md duration-300 ease-in-out active:scale-95 hover:shadow-[#21cdbe]`}
+          >
+            {uploadImg ? "Update Information" : "Update"}
           </button>
         </form>
         <Link

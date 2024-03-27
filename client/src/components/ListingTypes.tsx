@@ -22,7 +22,7 @@ function ListingTypes({
       setListing(data as ListingDataProps[]);
     }
   }, [data]);
-
+  console.log(listing);
   return (
     <div className="flex max-md:items-center lg:px-10 px-1 flex-col gap-2 my-10">
       <h1 className="lg:text-3xl text-2xl text-slate-600 font-semibold">
@@ -39,6 +39,10 @@ function ListingTypes({
           listing?.map((list: ListingDataProps, index: number) => (
             <SearchedData key={index} post={list} />
           ))
+        ) : listing === undefined && !isLoading ? (
+          <div className="w-full items-center flex  gap-4 my-2">
+            No listings yet!
+          </div>
         ) : (
           <div className="w-full items-center flex  gap-4 my-2">
             <ClipLoader size={50} color="#36d7b7" speedMultiplier={2} />
