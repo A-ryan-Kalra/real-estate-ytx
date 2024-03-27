@@ -208,7 +208,7 @@ function EditListing() {
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileArray: File[] = Array.from(e.target.files as FileList);
-    console.log(fileArray.length);
+    // console.log(fileArray.length);
     if (fileArray.length > 6) {
       setError("Can't upload more than 6 images at a time.");
       setImgFileUrl1([]);

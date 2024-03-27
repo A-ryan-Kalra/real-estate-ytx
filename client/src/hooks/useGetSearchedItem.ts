@@ -3,7 +3,7 @@ import fetcher from "../libs/fetcher";
 
 const useGetSearchedItem = (query: string) => {
   const { data, error, isLoading, mutate } = useSWR(
-    `/api/listing/getSearchedItem?${query}`,
+    `/api/listing/getSearchedItem?${query}&limit=5`,
     fetcher,
     {
       revalidateOnMount: true,
