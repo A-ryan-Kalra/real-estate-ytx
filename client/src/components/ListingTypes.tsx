@@ -22,7 +22,7 @@ function ListingTypes({
       setListing(data as ListingDataProps[]);
     }
   }, [data]);
-  console.log(listing);
+  // console.log(listing);
   return (
     <div className="flex max-md:items-center lg:px-10 px-1 flex-col gap-2 my-10">
       <h1 className="lg:text-3xl text-2xl text-slate-600 font-semibold">
