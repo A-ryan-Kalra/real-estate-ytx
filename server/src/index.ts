@@ -7,6 +7,9 @@ import userRouter from "./routes/user.router";
 import listingRouter from "./routes/listing.router";
 import cookieparse from "cookie-parser";
 import commentRoute from "./routes/comment.route";
+import path from "path";
+
+const dirname = path.resolve();
 
 dotenv.config();
 const PORT = process.env.PORT || 5001;
@@ -22,6 +25,11 @@ app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 app.use("/api/comment", commentRoute);
 
+app.use(express.static(path.join(dirname, "/client/dist")));
+
+app.get("*", (req: express.Request, res: express.Response) => {
+  res.sendFile(path.join(dirname, "client", "dist", "index.html"));
+});
 app.listen(PORT, () => {
   console.log("Port is successfully running on ", PORT);
 });

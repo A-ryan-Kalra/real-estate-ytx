@@ -12,6 +12,7 @@ import Listing from "./pages/Listing";
 import ScrollUp from "./components/ScrollUp";
 import Search from "./pages/Search";
 import About from "./pages/About";
+import ErrorPage from "./components/ErrorPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
       <Footer />
     </div>

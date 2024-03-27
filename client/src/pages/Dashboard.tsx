@@ -6,6 +6,7 @@ import DashUsers from "../components/DashUsers";
 import DashComments from "../components/DashComments";
 import DashListings from "../components/DashListings";
 import DashboardComponents from "../components/DashboardComponents";
+import ErrorPage from "../components/ErrorPage";
 
 function Dashboard() {
   const location = useLocation();
@@ -28,6 +29,11 @@ function Dashboard() {
       {tab === "comments" && <DashComments />}
       {tab === "listings" && <DashListings />}
       {tab === "dashboard" && <DashboardComponents />}
+      {tab !== "profile" &&
+        tab !== "users" &&
+        tab !== "comments" &&
+        tab !== "listings" &&
+        tab !== "dashboard" && <ErrorPage />}
     </div>
   );
 }
