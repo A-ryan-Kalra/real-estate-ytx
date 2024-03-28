@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { CommentProps, FormDataProps } from "../constants/types";
 import CardInfo from "./CardInfo";
 import { Link } from "react-router-dom";
+import { signOut } from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function DashboardComponents() {
   const [user, setUser] = useState<any>([]);
   const [listing, setListing] = useState<any>([]);
   const [comments, setComments] = useState<any>([]);
-  // const [sessionEnded, setSessionEnded] = useState<any>();
+  const dispatch = useDispatch();
+  const [sessionEnded, setSessionEnded] = useState<any>();
 
   useEffect(() => {
     const getComments = async () => {
@@ -18,7 +21,7 @@ function DashboardComponents() {
           // console.log(data);
           setComments(data as CommentProps[]);
         } else {
-          // setSessionEnded(data);
+          setSessionEnded(data);
           console.error(data);
         }
       } catch (error) {
@@ -34,7 +37,7 @@ function DashboardComponents() {
           setListing(data);
         } else {
           console.error(data);
-          // setSessionEnded(data);
+          setSessionEnded(data);
         }
       } catch (error) {
         console.error(error);
@@ -49,7 +52,7 @@ function DashboardComponents() {
           setUser(data as FormDataProps[]);
         } else {
           console.error(data);
-          // setSessionEnded(data);
+          setSessionEnded(data);
         }
       } catch (error) {
         console.error(error);
@@ -59,6 +62,21 @@ function DashboardComponents() {
     getListings();
     getComments();
   }, []);
+  const handleSession = () => {
+    dispatch(signOut());
+  };
+  if (sessionEnded?.message === "Unauthorized") {
+    return (
+      <div className="w-full relative justify-center px-3 pt-10 flex">
+        <div
+          className="text-xl relative top-[20%] text-center h-fit border-2 p-3 w-fit rounded-md hover:shadow-md hover:shadow-slate-300 duration-300 ease-in-out cursor-pointer"
+          onClick={handleSession}
+        >
+          Session has been expired, try signing in again
+        </div>
+      </div>
+    );
+  }
   // console.log(user);
   // console.log(listing);
   // console.log(comments);
@@ -105,7 +123,7 @@ function DashboardComponents() {
                   <td className="rounded-full p-1   border-2 ">
                     <img
                       src={usr?.profilePicture!}
-                      className="mx-auto rounded-full object-cover max-w-[50px] max-h-[50px]"
+                      className="mx-auto rounded-full object-cover w-[50px] h-[50px]"
                       alt="profile "
                     />
                   </td>
@@ -149,7 +167,7 @@ function DashboardComponents() {
                   <td className=" p-1   border-2 ">
                     <img
                       src={usr?.imageUrls[0]}
-                      className="mx-auto  object-cover max-w-[100px] max-h-[100px]"
+                      className="mx-auto  object-cover w-[100px] h-[80px]"
                       alt="profile "
                     />
                   </td>
