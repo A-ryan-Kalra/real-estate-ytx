@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import SidebarSearchTerm from "../components/SidebarSearchTerm";
 import { useEffect, useState } from "react";
 import { ListingDataProps } from "../constants/types";
@@ -12,7 +12,7 @@ function Search() {
   const { data, isLoading } = useGetSearchedItem(urlParams.toString());
   const [show, setShow] = useState(false);
   const [post, setPost] = useState<ListingDataProps[]>([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     if (data?.length > 0) {
