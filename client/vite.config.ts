@@ -7,26 +7,34 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      // includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: ["real-estate.svg", "house-384.png", "house-192.png"],
       manifest: {
         name: "Real-Estate-ytx",
+        description:
+          "Real-estate provides services for listing of property for rent or sale.",
         short_name: "Real-Estate",
         icons: [
           {
-            src: "/ebag-192.png",
+            src: "/house-192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "/ebag-384.png",
+            src: "/house-384.png",
             sizes: "384x384",
             type: "image/png",
           },
           {
-            src: "/ebag-512.png",
+            src: "/house-512.png",
             sizes: "512x512",
             type: "image/png",
+          },
+          {
+            src: "/house-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
           },
         ],
         theme_color: "#7BE1C8",
