@@ -195,7 +195,7 @@ function Listing() {
                   Contact Landlord
                 </button>
               )}
-            {contact && (
+            {currentUser && contact && (
               <div className="flex flex-col gap-1">
                 <textarea
                   onChange={handleChange}
