@@ -16,6 +16,8 @@ function Header() {
     const searchQuery = urlParams.get("searchTerm");
     if (searchQuery) {
       setSearchTerm(searchQuery as string);
+    } else if (searchQuery === "") {
+      setSearchTerm(searchQuery as string);
     }
   }, [urlParams.get("searchTerm")]);
 

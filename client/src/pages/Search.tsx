@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SidebarSearchTerm from "../components/SidebarSearchTerm";
 import { useEffect, useState } from "react";
 import { ListingDataProps } from "../constants/types";
@@ -10,15 +10,43 @@ function Search() {
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
   const { data, isLoading } = useGetSearchedItem(urlParams.toString());
+  const [show, setShow] = useState(false);
   const [post, setPost] = useState<ListingDataProps[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (data?.length > 0) {
       setPost(data as ListingDataProps[]);
     }
+    if (data?.length === 5) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
   }, [data]);
 
-  console.log(post);
+  const handleMore = async () => {
+    // console.log("lololol");
+    const startIndex = post?.length;
+    urlParams.set("startIndex", startIndex as unknown as string);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/getSearchedItem?${searchQuery}`);
+    const data = await res.json();
+    if (data?.length === 5) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+    if (res.ok) {
+      setPost((prev: any) => [...prev, ...data]);
+      // console.log(data, "lololol");
+    } else {
+      console.error(data);
+    }
+    // navigate(`/search?${searchQuery}`);
+  };
+
+  // console.log(post);
   return (
     <div className="min-h-screen md:flex-row flex-col relative flex gap-2">
       <div className="md:w-[540px]  max-md:bg-white z-10 h-fit sticky top-0">
@@ -52,6 +80,13 @@ function Search() {
             </div>
           )}
         </div>
+        {show && (
+          <div className="w-full flex justify-center" onClick={handleMore}>
+            <button className=" p-2 rounded-md hover:scale-105 hover:shadow-teal-200 duration-300 ease-in-out mx-auto bg-teal-400 text-white hover:underline font-semibold shadow-md">
+              Search More
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

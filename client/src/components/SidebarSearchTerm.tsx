@@ -43,7 +43,7 @@ function SidebarSearchTerm() {
     const offerFromUrl = urlParams.get("offer");
 
     setFormData({
-      searchTerm: searchTermFromUrl || formData.searchTerm,
+      searchTerm: searchTermFromUrl as string,
       type: typeFromUrl || formData.type,
       parking: parkingFromUrl === "true" || formData.parking,
       furnished: furnishedFromUrl === "true" || formData.furnished,
