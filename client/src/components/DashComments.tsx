@@ -64,7 +64,7 @@ function DashComments() {
 
   //   console.log(comments);
   return (
-    <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
+    <div className="max-w-[1350px] mx-auto w-full  max-h-[800px] py-2 px-1 overflow-auto">
       {currentUser?.isAdmin && comments?.length > 0 ? (
         <table className="shadow-md table-auto my-3  w-full max-w-[1320px] text-left mx-auto">
           <thead className="w-full">

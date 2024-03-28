@@ -64,9 +64,9 @@ export const getComments = async (
     const allComments = await Comment.find({ postId: req.params.postId }).sort({
       createdAt: -1,
     });
-    if (allComments.length === 0) {
-      return next(errorHandler(404, "The post does not exists"));
-    }
+    // if (allComments.length === 0) {
+    //   return next(errorHandler(404, "The post does not exists"));
+    // }
     return res.status(200).json(allComments);
   } catch (error) {
     next(error);
@@ -89,8 +89,8 @@ export const deleteComment = async (
         errorHandler(403, "You are not allowed to delete this comment")
       );
     }
-    await Comment.findByIdAndDelete(req.params.commentId);
-    res.status(200).json("User has been deleted");
+    const del = await Comment.findByIdAndDelete(req.params.commentId);
+    return res.status(200).json(del);
   } catch (error) {
     next(error);
   }

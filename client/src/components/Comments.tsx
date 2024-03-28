@@ -29,8 +29,12 @@ function Comments({
       if (commentContainerRef?.current) {
         commentContainerRef.current.scrollTop = 0;
       }
+    } else {
+      setComments([]);
     }
+    // console.log(data?.length);
   }, [data]);
+  // console.log(data?.length);
 
   useEffect(() => {
     setFormData((prev: CommentProps) => ({
@@ -131,7 +135,7 @@ function Comments({
             style={{ scrollBehavior: "smooth" }}
           >
             {comments?.map((comment: CommentProps, index: number) => (
-              <CommentsSection mutate={mutate} key={index} comment={comment} />
+              <CommentsSection mutated={mutate} key={index} comment={comment} />
             ))}
           </div>
         </div>

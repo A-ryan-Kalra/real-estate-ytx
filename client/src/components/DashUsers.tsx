@@ -87,7 +87,7 @@ function DashUsers() {
   }
   //   console.log(user);
   return (
-    <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
+    <div className="max-w-[1350px] mx-auto w-full  max-h-[800px] py-2 px-1 overflow-auto">
       {currentUser?.isAdmin && user?.length > 0 ? (
         <table className="shadow-md table-auto my-3  w-full max-w-[1320px] text-left mx-auto">
           <thead className="w-full">
@@ -115,7 +115,7 @@ function DashUsers() {
                 <td className=" border-2 p-2">
                   <img
                     src={usr!.profilePicture}
-                    className="rounded-full object-cover max-w-14 max-h-14"
+                    className="rounded-full object-cover w-14 h-14"
                     alt="profile "
                   />
                 </td>

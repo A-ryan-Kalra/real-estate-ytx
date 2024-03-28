@@ -74,6 +74,7 @@ function Listing() {
     await window.navigator.clipboard.writeText(window.location.href);
     setSHow(true);
   };
+  // console.log(currentUser);
   return (
     <div className="min-h-screen">
       {!isLoading && listing && Object?.keys(listing)?.length !== 0 ? (
@@ -184,14 +185,16 @@ function Listing() {
                 {listing?.furnished ? "Furnished" : "Not Furnished"}
               </li>
             </ul>
-            {!contact && listing?.userRef !== currentUser?._id && (
-              <button
-                onClick={() => setContact(true)}
-                className="border-2 p-2 rounded-md shadow-md  bg-indigo-700 font-semibold text-white border-indigo-400 hover:scale-105 duration-300 ease-in-out"
-              >
-                Contact Landlord
-              </button>
-            )}
+            {currentUser &&
+              !contact &&
+              listing?.userRef !== currentUser?._id && (
+                <button
+                  onClick={() => setContact(true)}
+                  className="border-2 p-2 rounded-md shadow-md  bg-indigo-700 font-semibold text-white border-indigo-400 hover:scale-105 duration-300 ease-in-out"
+                >
+                  Contact Landlord
+                </button>
+              )}
             {contact && (
               <div className="flex flex-col gap-1">
                 <textarea

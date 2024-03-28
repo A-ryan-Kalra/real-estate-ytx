@@ -8,10 +8,10 @@ import { useSelector } from "react-redux";
 
 function CommentsSection({
   comment,
-  mutate: mutated,
+  mutated,
 }: {
   comment: CommentProps;
-  mutate: () => void;
+  mutated: () => void;
 }) {
   const { data } = useGetUser(comment?.userId);
   const { currentUser } = useSelector((state: any) => state.user);

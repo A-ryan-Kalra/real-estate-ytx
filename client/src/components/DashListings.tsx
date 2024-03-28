@@ -67,9 +67,9 @@ function DashListings() {
   }
 
   return (
-    <div className="w-full py-2 px-1 overflow-x-auto overflow-hidden">
+    <div className=" max-w-[1350px] mx-auto w-full  max-h-[800px] py-2 px-2 overflow-auto">
       {currentUser?.isAdmin && user?.length > 0 ? (
-        <table className="shadow-md table-auto my-3  w-full max-w-[1320px] text-left mx-auto">
+        <table className="shadow-md table-auto my-3  w-full  max-w-[1320px] text-left mx-auto ">
           <thead className="w-full">
             <tr className="w-full text-[14px] ">
               <th className="w-1/12 border-2 p-2 whitespace-nowrap">
@@ -100,7 +100,7 @@ function DashListings() {
                 <td className=" border-2 p-2">
                   <img
                     src={usr?.imageUrls[0]}
-                    className="mx-auto object-cover max-w-[100px] max-h-20"
+                    className="mx-auto object-cover w-[100px] h-[70px]"
                     alt="profile "
                   />
                 </td>
