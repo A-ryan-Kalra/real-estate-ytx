@@ -1,5 +1,8 @@
 <h3>Website is live and running at  <a href="https://real-estate-ytx.onrender.com/">real-esate</a>
 </h3>
+<div>
+<div align="center"><img src="/client/public/docker.png" /></div>
+</div>
 <h2>Authors</h2>
 <ul>
 <li><a href="https://github.com/A-ryan-Kalra">Aryan Kalra</a></li>
@@ -36,22 +39,22 @@
  </Ul>
 
 </br>
-</br>
 
 <h1>Tech</h1>
 <ul>
-<li>MERN Stack</li>
-<li>RESTful API</li>
-<li>Nodejs</li>
-<li>Express.js</li>
-<li>JSON Web Token(JWT)</li>
 <li>Typescript</li>
+<li>Docker</li>
+<li>Nginx</li>
+<li>Mongoose</li>
+<li>MongoDb</li>
 <li>React</li>
+<li>Express.js</li>
+<li>Nodejs</li>
+<li>RESTful API</li>
 <li>Tailwind CSS</li>
 <li>Redux toolkit</li>
 <li>React Spinners</li>
-<li>Mongoose</li>
-<li>MongoDb</li>
+<li>JSON Web Token(JWT)</li>
 <li>Firebase Storage</li>
 <li>Bcrypt</li>
 </ul>
@@ -60,12 +63,34 @@
 <h2>Enviroment Variables</h2>
 <h3>To run this project, you will need to add the following enviroment variables to your .env file</h3>
 
-<code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
-</br>
-<code>JWT_Token</code>=It could be any secrey key
-</br>
+> <code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
+
+> <code>JWT_Token</code>=It could be any secret key
+
+> [Optional]<code>FIREBASE_API_KEY</code>=You can obtain firebase api key by creating an account on firebase
 
 <h2>Installation</h2>
+**DOCKER**
+
+> [!IMPORTANT]
+> Make sure to include .env file for both server and client directory before the build.
+
+Build image using docker compose as It will spin up necessary containers based on each configured docker compose file.
+
+```bash
+# It will build image for development stage
+docker compose -f compose.yaml -f compose.dev.yaml up -d --build
+```
+
+Open [http://localhost:3000](http://localhost:3000) for development stage as It will allow you to start making changes inside the webpage.
+
+```bash
+# It will build image for production stage
+docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+```
+
+You can also visit [http://localhost](http://localhost) and check for production stage since It's running on Nginx for reverse proxy so It will server static html files on deafult port 80.
+
 <h3>Install my project with npm<h3>
 
 ```bash
