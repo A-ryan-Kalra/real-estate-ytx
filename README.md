@@ -3,6 +3,9 @@
 <div>
 <div align="center"><img src="/client/public/docker.png" /></div>
 </div>
+
+**Please wait for a while as the server may take some time to spin up.**
+
 <h2>Authors</h2>
 <ul>
 <li><a href="https://github.com/A-ryan-Kalra">Aryan Kalra</a></li>
@@ -63,13 +66,15 @@
 <h2>Enviroment Variables</h2>
 <h3>To run this project, you will need to add the following enviroment variables to your .env file</h3>
 
-> <code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
-
+> [!NOTE] > <code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
 > <code>JWT_Token</code>=It could be any secret key
-
 > [Optional]<code>FIREBASE_API_KEY</code>=You can obtain firebase api key by creating an account on firebase
 
+<br/>
+
 <h2>Installation</h2>
+<br/>
+
 **DOCKER**
 
 > [!IMPORTANT]
