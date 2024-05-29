@@ -19,6 +19,7 @@
 <h3>Note</h3>
 <ul>
 <li>Admin Dashboard is only accessible to authorized users.However, User has to register an account in order to create a listing of their property.</li>
+<li>The project also includes a PWA extension, allowing you to easily access this website on your phone and have the same experience as when using the regular app.</li>
 <li>Feel free to visit.</li>
 </ul>
 </br>
@@ -49,16 +50,15 @@
 <ul>
 <li>Typescript</li>
 <li>Docker</li>
+<li>PWA</li>
 <li>Nginx</li>
 <li>Mongoose</li>
 <li>MongoDb</li>
 <li>React</li>
 <li>Express.js</li>
 <li>Nodejs</li>
-<li>RESTful API</li>
 <li>Tailwind CSS</li>
 <li>Redux toolkit</li>
-<li>React Spinners</li>
 <li>JSON Web Token(JWT)</li>
 <li>Firebase Storage</li>
 <li>Bcrypt</li>
@@ -101,7 +101,7 @@ Open [http://localhost:3000](http://localhost:3000) for development stage as It 
 docker compose -f compose.yaml -f compose.prod.yaml up -d --build
 ```
 
-You can also visit [http://localhost](http://localhost) and check for production stage since It's running on Nginx for reverse proxy so It will server static html files on deafult port 80.
+You can also visit [http://localhost](http://localhost) and check for production stage since It's running on Nginx for reverse proxy so It will serve static html files on deafult port 80.
 
 <h3>Install my project with npm<h3>
 
