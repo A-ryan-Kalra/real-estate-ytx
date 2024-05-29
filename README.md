@@ -68,9 +68,14 @@
 <h2>Enviroment Variables</h2>
 <h3>To run this project, you will need to add the following enviroment variables to your .env file</h3>
 
-> [!NOTE] > <code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
+> [!CAUTION]
+> Make sure to assign the environment variables before proceeding further.
+
+> <code>DATABASE_URL</code>=Your supabase database url, It could be achieved by creating a database in mongodb in order to run this project
+
 > <code>JWT_Token</code>=It could be any secret key
-> [Optional]<code>FIREBASE_API_KEY</code>=You can obtain firebase api key by creating an account on firebase
+
+> <code>FIREBASE_API_KEY</code>=You can obtain firebase api key by creating an account on firebase
 
 <br/>
 
