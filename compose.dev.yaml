@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: ./client
+      target: development
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - "/app/node_modules"
+      - "./client:/app"
+    environment:
+      - VITE_FIREBASE_API_KEY=${YOUR_VITE_FIREBASE_API_KEY}
+      - NODE_ENV=development
+    develop:
+      watch:
+        - path: ./client/package.json
+          action: rebuild
+        - path: ./client/package-lock.json
+          action: rebuild
+        - path: ./client
+          target: /app
+          action: sync
+
+  api:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5000:5000"
+    command: npm run dev
+    restart: unless-stopped
+    volumes:
+      - "/app/node_modules"
+      - ".:/app"
+    environment:
+      - PORT=5000
+      - DATABASE_URL=${YOUR_DATABASE_URL}
+      - JWT_SECRET=${YOUR_JWT_TOKEN}
