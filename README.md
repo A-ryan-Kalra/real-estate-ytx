@@ -4,10 +4,6 @@
 <div align="center"><img src="/client/public/docker.png" /></div>
 </div>
 
-<div align="center">
-<h4>Please wait for a while as the server may take some time to spin up.</h4>
-</div>
-
 <h2>Authors</h2>
 <ul>
 <li><a href="https://github.com/A-ryan-Kalra">Aryan Kalra</a></li>
