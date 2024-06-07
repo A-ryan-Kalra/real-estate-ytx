@@ -26,7 +26,7 @@ app.use("/api/listing", listingRouter);
 app.use("/api/comment", commentRoute);
 
 app.use(express.static(path.join(dirname, "/client/dist")));
-
+console.log(path.join(dirname, "client", "dist", "index.html"), " pathwow");
 app.get("*", (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(dirname, "client", "dist", "index.html"));
 });
@@ -48,3 +48,5 @@ app.use(
       .json({ success: false, message: errorMessage, statusCode });
   }
 );
+
+export default app;
