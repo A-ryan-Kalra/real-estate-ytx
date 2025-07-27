@@ -1,7 +1,26 @@
 <h3>Website is live and running at  <a href="https://real-estate-ytx.vercel.app/">real-esate</a>
 </h3>
 <div>
-<div align="center"><img src="/client/public/docker.png" /></div>
+<div align="center">
+ <img src="/client/public/docker.png" />
+</div>
+
+<br/>
+
+<h2> Quick peek at admin dashboard: 👀📝 </h2>
+
+<br/>
+
+
+| Titles            | Images           |   Contents   |
+| -                 | :-:              | :-           | 
+| Dashboard         | <img width="300" height="300" alt="dashboard" src="https://github.com/user-attachments/assets/3be19f6c-af2d-4d33-8d91-b55c2b70c712" />             |   Displays activities running within a month.     |
+| Comments          | <img width="300" height="300" alt="comments" src="https://github.com/user-attachments/assets/6b0204d7-8421-481b-a7fa-6777f4e892a6" />              |   Gives a quick look into the comments of every listed users.      |
+| Users             | <img width="300" height="300" alt="users" src="https://github.com/user-attachments/assets/64c169a5-0ff8-46c1-ae64-95b7d5085dad" />                 |   Shows total number of people joined within a month.      |
+| Listings          | <img width="300" height="300" alt="listings" src="https://github.com/user-attachments/assets/faafc98e-feb0-48ad-939e-a8a86716b125" />              |   Shows lising of each users.      |
+
+<br/>
+
 </div>
 
 <h2>Authors</h2>
